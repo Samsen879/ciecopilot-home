@@ -1,0 +1,103 @@
+{
+  "issue": 464,
+  "title": "Trust Pass 04 — tests, gates, and scripts scan",
+  "generated_at": "2026-06-14",
+  "mode": "spark_readonly",
+  "workflows": {
+    "release_critical": [
+      "backend-consistency-gate.yml",
+      "db-contract-gate.yml",
+      "error-book-contract-gate.yml",
+      "marking-correctness-gate.yml",
+      "mark-engine-quality-gate.yml",
+      "phase1-e2e-gate.yml",
+      "recommendations-production-gate.yml",
+      "syllabus-boundary-tests.yml",
+      "shared-rate-limit-gate.yml",
+      "api-route-integration-gate.yml",
+      "a1-topic-link-gate.yml",
+      "b1-rubric-extraction-gate.yml",
+      "ao-operations-gate.yml"
+    ],
+    "advisory_benchmark": [
+      "rag-s1-1-benchmark.yml",
+      "rag-s1-2-benchmark.yml",
+      "rag-decision-benchmark.yml",
+      "rag-s2-advisory-gate.yml"
+    ],
+    "security": [
+      "security-baseline-gate.yml",
+      "security-depth-gate.yml"
+    ],
+    "data_migration": [
+      "db-contract-gate.yml",
+      "syllabus-boundary-tests.yml",
+      "shared-rate-limit-gate.yml"
+    ],
+    "ao_control_plane": [
+      "ao-operations-gate.yml",
+      "rag-s1-contract-gate.yml",
+      "rag-s1-metric-gate.yml"
+    ],
+    "unclear_stale": [
+      "rag-s2-advisory-gate.yml",
+      "rag-s1-contract-gate.yml",
+      "rag-s1-metric-gate.yml",
+      "rag-s1-1-benchmark.yml",
+      "rag-s1-2-benchmark.yml"
+    ]
+  },
+  "package": {
+    "script_families": [
+      "test",
+      "api",
+      "ao",
+      "workflow",
+      "learning",
+      "syllabus"
+    ],
+    "workflow_scripts_path": "scripts/workflow",
+    "workflow_script_lib_path": "scripts/workflow/lib",
+    "notes": "test entry points and gate orchestration scripts are defined in package namespaces and are wired to workflow helper scripts"
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "api/**/*.js"
+    ],
+    "exclusions": [
+      "!api/**/node_modules/**",
+      "!api/**/*.test.js"
+    ],
+    "testMatch": [
+      "**/__tests__/**/*.js",
+      "**/?(*.)+(spec|test).js"
+    ],
+    "implied_coverage_gap": "Frontend/runtime tests are discoverable but not included in coverage scope"
+  },
+  "test_distribution": {
+    "api_tests": 86,
+    "src_tests": 29,
+    "scripts_tests": 103,
+    "tests_ao": 68,
+    "api_learning": 42,
+    "api_rag": 22,
+    "api_marking": 6,
+    "api_evidence": 1,
+    "api_runtime": 3,
+    "src_learning_runtime": 14,
+    "tests_marking": 1,
+    "tests_evidence_ledger": 18,
+    "tests_evidence": 2
+  },
+  "findings": {
+    "P0": [
+      "Jest coverage is API-only, which can overstate/understate release confidence for frontend/runtime domains"
+    ],
+    "P1": [
+      "Workflow naming and AO-only no-op branches create ambiguity about what validations are enforced under each scope"
+    ],
+    "P2": [
+      "No single docs surface currently maps each workflow to release/advisory/AO-only semantics"
+    ]
+  }
+}

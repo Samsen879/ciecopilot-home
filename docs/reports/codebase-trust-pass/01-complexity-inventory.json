@@ -1,0 +1,6696 @@
+{
+  "generatedAt": "2026-06-14T08:12:47.551Z",
+  "repoRoot": "/home/samsen/.worktrees/ciecopilot-home/cie-304",
+  "issue": 461,
+  "parent": 460,
+  "scopeRoots": [
+    "src",
+    "api",
+    "scripts",
+    "tests",
+    ".github/workflows"
+  ],
+  "topFiles": [
+    {
+      "rank": 1,
+      "file": "api/learning/__tests__/workspace-read-service.test.js",
+      "ext": ".js",
+      "loc": 3307,
+      "bytes": 121555,
+      "isReact": false,
+      "importCount": 1,
+      "importLines": [
+        1
+      ],
+      "hooks": {
+        "useState": 0,
+        "useRef": 0,
+        "useEffect": 0
+      },
+      "imports": [
+        {
+          "source": "@jest/globals",
+          "line": 1,
+          "kind": "import"
+        }
+      ]
+    },
+    {
+      "rank": 2,
+      "file": "api/rag/__tests__/ask-service.test.js",
+      "ext": ".js",
+      "loc": 2246,
+      "bytes": 80434,
+      "isReact": false,
+      "importCount": 4,
+      "importLines": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "hooks": {
+        "useState": 0,
+        "useRef": 0,
+        "useEffect": 0
+      },
+      "imports": [
+        {
+          "source": "@jest/globals",
+          "line": 1,
+          "kind": "import"
+        },
+        {
+          "source": "node:fs",
+          "line": 2,
+          "kind": "import"
+        },
+        {
+          "source": "node:path",
+          "line": 3,
+          "kind": "import"
+        },
+        {
+          "source": "../lib/ask-service.js",
+          "line": 4,
+          "kind": "import"
+        }
+      ]
+    },
+    {
+      "rank": 3,
+      "file": "tests/ao/controller-loop.test.js",
+      "ext": ".js",
+      "loc": 2173,
+      "bytes": 72999,
+      "isReact": false,
+      "importCount": 7,
+      "importLines": [
+        1,
+        2,
+        3,
+        5,
+        16,
+        17,
+        18
+      ],
+      "hooks": {
+        "useState": 0,
+        "useRef": 0,
+        "useEffect": 0
+      },
+      "imports": [
+        {
+          "source": "node:fs",
+          "line": 1,
+          "kind": "import"
+        },
+        {
+          "source": "node:os",
+          "line": 2,
+          "kind": "import"
+        },
+        {
+          "source": "node:path",
+          "line": 3,
+          "kind": "import"
+        },
+        {
+          "source": "@jest/globals",
+          "line": 5,
+          "kind": "import"
+        },
+        {
+          "source": "../../scripts/ao/lib/controller-loop.js",
+          "line": 16,
+          "kind": "import"
+        },
+        {
+          "source": "../../scripts/ao/lib/runtime-preflight.js",
+          "line": 17,
+          "kind": "import"
+        },
+        {
+          "source": "../../scripts/ao/lib/state-repository.js",
+          "line": 18,
+          "kind": "import"
+        }
+      ]
+    },
+    {
+      "rank": 4,
+      "file": "scripts/learning/run_9702_production_ready_gate.js",
+      "ext": ".js",
+      "loc": 2103,
+      "bytes": 83913,
+      "isReact": false,
+      "importCount": 5,
+      "importLines": [
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "hooks": {
+        "useState": 0,
+        "useRef": 0,
+        "useEffect": 0
+      },
+      "imports": [
+        {
+          "source": "node:child_process",
+          "line": 3,
+          "kind": "import"
+        },
+        {
+          "source": "node:crypto",
+          "line": 4,
+          "kind": "import"
+        },
+        {
+          "source": "node:fs",
+          "line": 5,
+          "kind": "import"
+        },
+        {
+          "source": "node:path",
+          "line": 6,
+          "kind": "import"
+        },
+        {
+          "source": "node:url",
+          "line": 7,
+          "kind": "import"
+        }
+      ]
+    },
+    {
+      "rank": 5,
+      "file": "scripts/learning/run_9231_wave4_production_ready_gate.js",
+      "ext": ".js",
+      "loc": 1913,
+      "bytes": 74947,
+      "isReact": false,
+      "importCount": 5,
+      "importLines": [
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "hooks": {
+        "useState": 0,
+        "useRef": 0,
+        "useEffect": 0
+      },
+      "imports": [
+        {
+          "source": "node:child_process",
+          "line": 3,
+          "kind": "import"
+        },
+        {
+          "source": "node:crypto",
+          "line": 4,
+          "kind": "import"
+        },
+        {
+          "source": "node:fs",
+          "line": 5,
+          "kind": "import"
+        },
+        {
+          "source": "node:path",
+          "line": 6,
+          "kind": "import"
+        },
+        {
+          "source": "node:url",
+          "line": 7,
+          "kind": "import"
+        }
+      ]
+    },
+    {
+      "rank": 6,
+      "file": "scripts/ao/lib/controller-loop.js",
+      "ext": ".js",
+      "loc": 1595,
+      "bytes": 55763,
+      "isReact": false,
+      "importCount": 13,
+      "importLines": [
+        1,
+        10,
+        11,
+        18,
+        19,
+        20,
+        21,
+        22,
+        37,
+        38,
+        39,
+        40,
+        49
+      ],
+      "hooks": {
+        "useState": 0,
+        "useRef": 0,
+        "useEffect": 0
+      },
+      "imports": [
+        {
+          "source": "node:crypto",
+          "line": 1,
+          "kind": "import"
+        },
+        {
+          "source": "./checkpoint-store.js",
+          "line": 10,
+          "kind": "import"
+        },
+        {
+          "source": "./state-repository.js",
+          "line": 11,
+          "kind": "import"
+        },
+        {
+          "source": "./ao-observation-source.js",
+          "line": 18,
+          "kind": "import"
+        },
+        {
+          "source": "./doctor-contracts.js",
+          "line": 19,
+          "kind": "import"
+        },
+        {
+          "source": "./doctor-engine.js",
+          "line": 20,
+          "kind": "import"
+        },
+        {
+          "source": "./doctor-local-state-source.js",
+          "line": 21,
+          "kind": "import"
+        },
+        {
+          "source": "./github-observation-source.js",
+          "line": 22,
+          "kind": "import"
+        },
+        {
+          "source": "./continuity.js",
+          "line": 37,
+          "kind": "import"
+        },
+        {
+          "source": "./decision-chain.js",
+          "line": 38,
+          "kind": "import"
+        },
+        {
+          "source": "./review-contracts.js",
+          "line": 39,
+          "kind": "import"
+        },
+        {
+          "source": "./run-metrics.js",
+          "line": 40,
+          "kind": "import"
+        },
+        {
+          "source": "./reconciliation-engine.js",
+          "line": 49,
+          "kind": "import"
+        }
+      ]
+    },
+    {
+      "rank": 7,
+      "file": "api/learning/__tests__/session-api.test.js",
+      "ext": ".js",
+      "loc": 1480,
+      "bytes": 54911,
+      "isReact": false,
+      "importCount": 3,
+      "importLines": [
+        1,
+        2,
+        3
+      ],
+      "hooks": {
+        "useState": 0,
+        "useRef": 0,
+        "useEffect": 0
+      },
+      "imports": [
+        {
+          "source": "@jest/globals",
+          "line": 1,
+          "kind": "import"
+        },
+        {
+          "source": "../lib/repositories/request-idempotency-repository.js",
+          "line": 2,
+          "kind": "import"
+        },
+        {
+          "source": "./loopback-test-client.js",
+          "line": 3,
+          "kind": "import"
+        }
+      ]
+    },
+    {
+      "rank": 8,
+      "file": "src/components/learning-runtime/__tests__/view-models.test.js",
+      "ext": ".js",
+      "loc": 1474,
+      "bytes": 52776,
+      "isReact": false,
+      "importCount": 2,
+      "importLines": [
+        1,
+        9
+      ],
+      "hooks": {
+        "useState": 0,
+        "useRef": 0,
+        "useEffect": 0
+      },
+      "imports": [
+        {
+          "source": "../view-models/session-view-model.js",
+          "line": 1,
+          "kind": "import"
+        },
+        {
+          "source": "../view-models/workspace-view-model.js",
+          "line": 9,
+          "kind": "import"
+        }
+      ]
+    },
+    {
+      "rank": 9,
+      "file": "scripts/learning/__tests__/question-analysis-backfill.test.js",
+      "ext": ".js",
+      "loc": 1466,
+      "bytes": 57710,
+      "isReact": false,
+      "importCount": 1,
+      "importLines": [
+        1
+      ],
+      "hooks": {
+        "useState": 0,
+        "useRef": 0,
+        "useEffect": 0
+      },
+      "imports": [
+        {
+          "source": "../lib/question-analysis-backfill.js",
+          "line": 1,
+          "kind": "import"
+        }
+      ]
+    },
+    {
+      "rank": 10,
+      "file": "api/learning/__tests__/review-task-service.test.js",
+      "ext": ".js",
+      "loc": 1415,
+      "bytes": 48954,
+      "isReact": false,
+      "importCount": 2,
+      "importLines": [
+        1,
+        2
+      ],
+      "hooks": {
+        "useState": 0,
+        "useRef": 0,
+        "useEffect": 0
+      },
+      "imports": [
+        {
+          "source": "../lib/mastery/mastery-orchestrator.js",
+          "line": 1,
+          "kind": "import"
+        },
+        {
+          "source": "../lib/review/review-task-service.js",
+          "line": 2,
+          "kind": "import"
+        }
+      ]
+    },
+    {
+      "rank": 11,
+      "file": "api/rag/lib/ask-service.js",
+      "ext": ".js",
+      "loc": 1336,
+      "bytes": 50623,
+      "isReact": false,
+      "importCount": 24,
+      "importLines": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24
+      ],
+      "hooks": {
+        "useState": 0,
+        "useRef": 0,
+        "useEffect": 0
+      },
+      "imports": [
+        {
+          "source": "node:fs",
+          "line": 1,
+          "kind": "import"
+        },
+        {
+          "source": "node:path",
+          "line": 2,
+          "kind": "import"
+        },
+        {
+          "source": "../../learning/lib/session-runtime/ask-context-builder.js",
+          "line": 3,
+          "kind": "import"
+        },
+        {
+          "source": "../../lib/supabase/client.js",
+          "line": 4,
+          "kind": "import"
+        },
+        {
+          "source": "../../lib/security/redaction.js",
+          "line": 5,
+          "kind": "import"
+        },
+        {
+          "source": "./answer-policy.js",
+          "line": 6,
+          "kind": "import"
+        },
+        {
+          "source": "./boundary-resolver.js",
+          "line": 7,
+          "kind": "import"
+        },
+        {
+          "source": "./chat-client.js",
+          "line": 8,
+          "kind": "import"
+        },
+        {
+          "source": "./config.js",
+          "line": 9,
+          "kind": "import"
+        },
+        {
+          "source": "./constants.js",
+          "line": 10,
+          "kind": "import"
+        },
+        {
+          "source": "./cost.js",
+          "line": 11,
+          "kind": "import"
+        },
+        {
+          "source": "./evidence-assembler.js",
+          "line": 12,
+          "kind": "import"
+        },
+        {
+          "source": "./embedding-client.js",
+          "line": 13,
+          "kind": "import"
+        },
+        {
+          "source": "./errors.js",
+          "line": 14,
+          "kind": "import"
+        },
+        {
+          "source": "./production-evidence-rollout.js",
+          "line": 15,
+          "kind": "import"
+        },
+        {
+          "source": "./query-normalizer.js",
+          "line": 16,
+          "kind": "import"
+        },
+        {
+          "source": "./retrievers/_hybrid-rpc.js",
+          "line": 17,
+          "kind": "import"
+        },
+        {
+          "source": "./response-schema-validator.js",
+          "line": 18,
+          "kind": "import"
+        },
+        {
+          "source": "./s2-fallback-controller.js",
+          "line": 19,
+          "kind": "import"
+        },
+        {
+          "source": "./s2-local-classifier.js",
+          "line": 20,
+          "kind": "import"
+        },
+        {
+          "source": "./s2-llm-classifier.js",
+          "line": 21,
+          "kind": "import"
+        },
+        {
+          "source": "./s2-multi-hop-retriever.js",
+          "line": 22,
+          "kind": "import"
+        },
+        {
+          "source": "./s2-route-rules.js",
+          "line": 23,
+          "kind": "import"
+        },
+        {
+          "source": "./topic-leakage-guard.js",
+          "line": 24,
+          "kind": "import"
+        }
+      ]
+    },
+    {
+      "rank": 12,
+      "file": "api/learning/__tests__/attempt-event-service.test.js",
+      "ext": ".js",
+      "loc": 1325,
+      "bytes": 44555,
+      "isReact": false,
+      "importCount": 0,
+      "importLines": [],
+      "hooks": {
+        "useState": 0,
+        "useRef": 0,
+        "useEffect": 0
+      },
+      "imports": []
+    },
+    {
+      "rank": 13,
+      "file": "src/components/learning-runtime/view-models/workspace-view-model.js",
+      "ext": ".js",
+      "loc": 1283,
+      "bytes": 47441,
+      "isReact": false,
+      "importCount": 2,
+      "importLines": [
+        1,
+        2
+      ],
+      "hooks": {
+        "useState": 0,
+        "useRef": 0,
+        "useEffect": 0
+      },
+      "imports": [
+        {
+          "source": "../../../lib/contracts/runtime-contract-client.js",
+          "line": 1,
+          "kind": "import"
+        },
+        {
+          "source": "./review-queue-view-model.js",
+          "line": 2,
+          "kind": "import"
+        }
+      ]
+    },
+    {
+      "rank": 14,
+      "file": "scripts/ao/lib/state-contracts.js",
+      "ext": ".js",
+      "loc": 1273,
+      "bytes": 49054,
+      "isReact": false,
+      "importCount": 3,
+      "importLines": [
+        1,
+        2,
+        3
+      ],
+      "hooks": {
+        "useState": 0,
+        "useRef": 0,
+        "useEffect": 0
+      },
+      "imports": [
+        {
+          "source": "./runtime-contracts.js",
+          "line": 1,
+          "kind": "import"
+        },
+        {
+          "source": "./repo-knowledge.js",
+          "line": 2,
+          "kind": "import"
+        },
+        {
+          "source": "./task-spec.js",
+          "line": 3,
+          "kind": "import"
+        }
+      ]
+    },
+    {
+      "rank": 15,
+      "file": "api/learning/lib/workspaces/paper-workspace-entry-resolver.js",
+      "ext": ".js",
+      "loc": 1266,
+      "bytes": 39915,
+      "isReact": false,
+      "importCount": 0,
+      "importLines": [],
+      "hooks": {
+        "useState": 0,
+        "useRef": 0,
+        "useEffect": 0
+      },
+      "imports": []
+    },
+    {
+      "rank": 16,
+      "file": "api/learning/lib/workspaces/workspace-read-service.js",
+      "ext": ".js",
+      "loc": 1260,
+      "bytes": 44120,
+      "isReact": false,
+      "importCount": 4,
+      "importLines": [
+        1,
+        2,
+        3,
+        11
+      ],
+      "hooks": {
+        "useState": 0,
+        "useRef": 0,
+        "useEffect": 0
+      },
+      "imports": [
+        {
+          "source": "../contracts/runtime-contract.js",
+          "line": 1,
+          "kind": "import"
+        },
+        {
+          "source": "../http/learning-http.js",
+          "line": 2,
+          "kind": "import"
+        },
+        {
+          "source": "../contracts/error-contract.js",
+          "line": 3,
+          "kind": "import"
+        },
+        {
+          "source": "../repositories/artifact-repository.js",
+          "line": 11,
+          "kind": "import"
+        }
+      ]
+    },
+    {
+      "rank": 17,
+      "file": "api/learning/lib/events/attempt-event-service.js",
+      "ext": ".js",
+      "loc": 1228,
+      "bytes": 44343,
+      "isReact": false,
+      "importCount": 6,
+      "importLines": [
+        1,
+        2,
+        3,
+        4,
+        9,
+        10
+      ],
+      "hooks": {
+        "useState": 0,
+        "useRef": 0,
+        "useEffect": 0
+      },
+      "imports": [
+        {
+          "source": "node:crypto",
+          "line": 1,
+          "kind": "import"
+        },
+        {
+          "source": "./event-service.js",
+          "line": 2,
+          "kind": "import"
+        },
+        {
+          "source": "./learning-effect-engine.js",
+          "line": 3,
+          "kind": "import"
+        },
+        {
+          "source": "../contracts/runtime-authority-posture.js",
+          "line": 4,
+          "kind": "import"
+        },
+        {
+          "source": "../mastery/mastery-orchestrator.js",
+          "line": 9,
+          "kind": "import"
+        },
+        {
+          "source": "../repositories/reconciliation-repository.js",
+          "line": 10,
+          "kind": "import"
+        }
+      ]
+    },
+    {
+      "rank": 18,
+      "file": "scripts/ao/lib/eval-harness.js",
+      "ext": ".js",
+      "loc": 1202,
+      "bytes": 42088,
+      "isReact": false,
+      "importCount": 20,
+      "importLines": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        30
+      ],
+      "hooks": {
+        "useState": 0,
+        "useRef": 0,
+        "useEffect": 0
+      },
+      "imports": [
+        {
+          "source": "node:crypto",
+          "line": 1,
+          "kind": "import"
+        },
+        {
+          "source": "node:fs",
+          "line": 2,
+          "kind": "import"
+        },
+        {
+          "source": "node:os",
+          "line": 3,
+          "kind": "import"
+        },
+        {
+          "source": "node:path",
+          "line": 4,
+          "kind": "import"
+        },
+        {
+          "source": "./controller-loop.js",
+          "line": 6,
+          "kind": "import"
+        },
+        {
+          "source": "./ao-observation-source.js",
+          "line": 7,
+          "kind": "import"
+        },
+        {
+          "source": "./checkpoint-store.js",
+          "line": 8,
+          "kind": "import"
+        },
+        {
+          "source": "./continuity.js",
+          "line": 9,
+          "kind": "import"
+        },
+        {
+          "source": "./doctor-contracts.js",
+          "line": 10,
+          "kind": "import"
+        },
+        {
+          "source": "./doctor-engine.js",
+          "line": 11,
+          "kind": "import"
+        },
+        {
+          "source": "./doctor-local-state-source.js",
+          "line": 12,
+          "kind": "import"
+        },
+        {
+          "source": "./github-observation-source.js",
+          "line": 13,
+          "kind": "import"
+        },
+        {
+          "source": "./handoff-protocol.js",
+          "line": 14,
+          "kind": "import"
+        },
+        {
+          "source": "./lifecycle-contracts.js",
+          "line": 15,
+          "kind": "import"
+        },
+        {
+          "source": "./lifecycle-engine.js",
+          "line": 16,
+          "kind": "import"
+        },
+        {
+          "source": "./manage-runner.js",
+          "line": 17,
+          "kind": "import"
+        },
+        {
+          "source": "./run-metrics.js",
+          "line": 18,
+          "kind": "import"
+        },
+        {
+          "source": "./reconciliation-contracts.js",
+          "line": 19,
+          "kind": "import"
+        },
+        {
+          "source": "./reconciliation-engine.js",
+          "line": 20,
+          "kind": "import"
+        },
+        {
+          "source": "./state-repository.js",
+          "line": 30,
+          "kind": "import"
+        }
+      ]
+    },
+    {
+      "rank": 19,
+      "file": "scripts/evaluation/run_question_search_gate.js",
+      "ext": ".js",
+      "loc": 1165,
+      "bytes": 41127,
+      "isReact": false,
+      "importCount": 6,
+      "importLines": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "hooks": {
+        "useState": 0,
+        "useRef": 0,
+        "useEffect": 0
+      },
+      "imports": [
+        {
+          "source": "node:child_process",
+          "line": 3,
+          "kind": "import"
+        },
+        {
+          "source": "node:fs",
+          "line": 4,
+          "kind": "import"
+        },
+        {
+          "source": "node:path",
+          "line": 5,
+          "kind": "import"
+        },
+        {
+          "source": "node:url",
+          "line": 6,
+          "kind": "import"
+        },
+        {
+          "source": "node:util",
+          "line": 7,
+          "kind": "import"
+        },
+        {
+          "source": "../../api/lib/supabase/client.js",
+          "line": 8,
+          "kind": "import"
+        }
+      ]
+    },
+    {
+      "rank": 20,
+      "file": "scripts/rag_ingest.js",
+      "ext": ".js",
+      "loc": 1122,
+      "bytes": 43221,
+      "isReact": false,
+      "importCount": 8,
+      "importLines": [
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13
+      ],
+      "hooks": {
+        "useState": 0,
+        "useRef": 0,
+        "useEffect": 0
+      },
+      "imports": [
+        {
+          "source": "dotenv",
+          "line": 7,
+          "kind": "import"
+        },
+        {
+          "source": "fs",
+          "line": 8,
+          "kind": "import"
+        },
+        {
+          "source": "path",
+          "line": 9,
+          "kind": "import"
+        },
+        {
+          "source": "crypto",
+          "line": 10,
+          "kind": "import"
+        },
+        {
+          "source": "url",
+          "line": 11,
+          "kind": "import"
+        },
+        {
+          "source": "module",
+          "line": 12,
+          "kind": "import"
+        },
+        {
+          "source": "@supabase/supabase-js",
+          "line": 13,
+          "kind": "import"
+        },
+        {
+          "source": "pdf-parse",
+          "line": 344,
+          "kind": "require"
+        }
+      ]
+    },
+    {
+      "rank": 21,
+      "file": "src/api/__tests__/learningRuntimeApi.test.js",
+      "ext": ".js",
+      "loc": 1089,
+      "bytes": 36886,
+      "isReact": false,
+      "importCount": 2,
+      "importLines": [
+        1,
+        2
+      ],
+      "hooks": {
+        "useState": 0,
+        "useRef": 0,
+        "useEffect": 0
+      },
+      "imports": [
+        {
+          "source": "node:fs",
+          "line": 1,
+          "kind": "import"
+        },
+        {
+          "source": "@jest/globals",
+          "line": 2,
+          "kind": "import"
+        }
+      ]
+    },
+    {
+      "rank": 22,
+      "file": "scripts/learning/lib/browser-closed-loop-fixture.js",
+      "ext": ".js",
+      "loc": 1070,
+      "bytes": 38601,
+      "isReact": false,
+      "importCount": 3,
+      "importLines": [
+        1,
+        2,
+        3
+      ],
+      "hooks": {
+        "useState": 0,
+        "useRef": 0,
+        "useEffect": 0
+      },
+      "imports": [
+        {
+          "source": "node:fs",
+          "line": 1,
+          "kind": "import"
+        },
+        {
+          "source": "node:path",
+          "line": 2,
+          "kind": "import"
+        },
+        {
+          "source": "node:url",
+          "line": 3,
+          "kind": "import"
+        }
+      ]
+    },
+    {
+      "rank": 23,
+      "file": "scripts/learning/run_9702_full_production_ready_aggregate_gate.js",
+      "ext": ".js",
+      "loc": 1059,
+      "bytes": 55148,
+      "isReact": false,
+      "importCount": 5,
+      "importLines": [
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "hooks": {
+        "useState": 0,
+        "useRef": 0,
+        "useEffect": 0
+      },
+      "imports": [
+        {
+          "source": "node:child_process",
+          "line": 3,
+          "kind": "import"
+        },
+        {
+          "source": "node:fs",
+          "line": 4,
+          "kind": "import"
+        },
+        {
+          "source": "node:path",
+          "line": 5,
+          "kind": "import"
+        },
+        {
+          "source": "node:url",
+          "line": 6,
+          "kind": "import"
+        },
+        {
+          "source": "./run_9702_production_ready_gate.js",
+          "line": 7,
+          "kind": "import"
+        }
+      ]
+    },
+    {
+      "rank": 24,
+      "file": "tests/ao/state-runner.test.js",
+      "ext": ".js",
+      "loc": 1047,
+      "bytes": 34359,
+      "isReact": false,
+      "importCount": 8,
+      "importLines": [
+        1,
+        2,
+        3,
+        5,
+        7,
+        8,
+        22,
+        23
+      ],
+      "hooks": {
+        "useState": 0,
+        "useRef": 0,
+        "useEffect": 0
+      },
+      "imports": [
+        {
+          "source": "node:fs",
+          "line": 1,
+          "kind": "import"
+        },
+        {
+          "source": "node:os",
+          "line": 2,
+          "kind": "import"
+        },
+        {
+          "source": "node:path",
+          "line": 3,
+          "kind": "import"
+        },
+        {
+          "source": "@jest/globals",
+          "line": 5,
+          "kind": "import"
+        },
+        {
+          "source": "../../scripts/ao/lib/checkpoint-store.js",
+          "line": 7,
+          "kind": "import"
+        },
+        {
+          "source": "../../scripts/ao/lib/handoff-protocol.js",
+          "line": 8,
+          "kind": "import"
+        },
+        {
+          "source": "../../scripts/ao/lib/state-repository.js",
+          "line": 22,
+          "kind": "import"
+        },
+        {
+          "source": "../../scripts/ao/lib/state-runner.js",
+          "line": 23,
+          "kind": "import"
+        }
+      ]
+    },
+    {
+      "rank": 25,
+      "file": "tests/ao/action-executor.test.js",
+      "ext": ".js",
+      "loc": 1017,
+      "bytes": 34230,
+      "isReact": false,
+      "importCount": 5,
+      "importLines": [
+        1,
+        2,
+        3,
+        5,
+        16
+      ],
+      "hooks": {
+        "useState": 0,
+        "useRef": 0,
+        "useEffect": 0
+      },
+      "imports": [
+        {
+          "source": "node:fs",
+          "line": 1,
+          "kind": "import"
+        },
+        {
+          "source": "node:os",
+          "line": 2,
+          "kind": "import"
+        },
+        {
+          "source": "node:path",
+          "line": 3,
+          "kind": "import"
+        },
+        {
+          "source": "@jest/globals",
+          "line": 5,
+          "kind": "import"
+        },
+        {
+          "source": "../../scripts/ao/lib/state-repository.js",
+          "line": 16,
+          "kind": "import"
+        }
+      ]
+    },
+    {
+      "rank": 26,
+      "file": "api/marking/__tests__/evaluate-v1.test.js",
+      "ext": ".js",
+      "loc": 1016,
+      "bytes": 35342,
+      "isReact": false,
+      "importCount": 1,
+      "importLines": [
+        4
+      ],
+      "hooks": {
+        "useState": 0,
+        "useRef": 0,
+        "useEffect": 0
+      },
+      "imports": [
+        {
+          "source": "@jest/globals",
+          "line": 4,
+          "kind": "import"
+        }
+      ]
+    },
+    {
+      "rank": 27,
+      "file": "scripts/evaluation/__tests__/question-search-gate.test.js",
+      "ext": ".js",
+      "loc": 1015,
+      "bytes": 38698,
+      "isReact": false,
+      "importCount": 2,
+      "importLines": [
+        1,
+        2
+      ],
+      "hooks": {
+        "useState": 0,
+        "useRef": 0,
+        "useEffect": 0
+      },
+      "imports": [
+        {
+          "source": "node:path",
+          "line": 1,
+          "kind": "import"
+        },
+        {
+          "source": "@jest/globals",
+          "line": 2,
+          "kind": "import"
+        }
+      ]
+    },
+    {
+      "rank": 28,
+      "file": "api/learning/lib/question-analysis/question-intelligence-service.js",
+      "ext": ".js",
+      "loc": 1015,
+      "bytes": 37897,
+      "isReact": false,
+      "importCount": 0,
+      "importLines": [],
+      "hooks": {
+        "useState": 0,
+        "useRef": 0,
+        "useEffect": 0
+      },
+      "imports": []
+    },
+    {
+      "rank": 29,
+      "file": "scripts/learning/build_9231_question_text_foundation_inventory.js",
+      "ext": ".js",
+      "loc": 1012,
+      "bytes": 45734,
+      "isReact": false,
+      "importCount": 3,
+      "importLines": [
+        3,
+        4,
+        5
+      ],
+      "hooks": {
+        "useState": 0,
+        "useRef": 0,
+        "useEffect": 0
+      },
+      "imports": [
+        {
+          "source": "node:fs",
+          "line": 3,
+          "kind": "import"
+        },
+        {
+          "source": "node:path",
+          "line": 4,
+          "kind": "import"
+        },
+        {
+          "source": "node:url",
+          "line": 5,
+          "kind": "import"
+        }
+      ]
+    },
+    {
+      "rank": 30,
+      "file": "scripts/syllabus/lib/9709-syllabus-gate.js",
+      "ext": ".js",
+      "loc": 997,
+      "bytes": 36253,
+      "isReact": false,
+      "importCount": 5,
+      "importLines": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "hooks": {
+        "useState": 0,
+        "useRef": 0,
+        "useEffect": 0
+      },
+      "imports": [
+        {
+          "source": "node:fs",
+          "line": 1,
+          "kind": "import"
+        },
+        {
+          "source": "node:path",
+          "line": 2,
+          "kind": "import"
+        },
+        {
+          "source": "node:module",
+          "line": 3,
+          "kind": "import"
+        },
+        {
+          "source": "node:url",
+          "line": 4,
+          "kind": "import"
+        },
+        {
+          "source": "ajv",
+          "line": 7,
+          "kind": "require"
+        }
+      ]
+    },
+    {
+      "rank": 31,
+      "file": "scripts/rag/run_live_benchmark.js",
+      "ext": ".js",
+      "loc": 996,
+      "bytes": 38971,
+      "isReact": false,
+      "importCount": 6,
+      "importLines": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "hooks": {
+        "useState": 0,
+        "useRef": 0,
+        "useEffect": 0
+      },
+      "imports": [
+        {
+          "source": "node:fs",
+          "line": 3,
+          "kind": "import"
+        },
+        {
+          "source": "node:path",
+          "line": 4,
+          "kind": "import"
+        },
+        {
+          "source": "dotenv",
+          "line": 5,
+          "kind": "import"
+        },
+        {
+          "source": "@supabase/supabase-js",
+          "line": 6,
+          "kind": "import"
+        },
+        {
+          "source": "../../api/rag/lib/ask-service.js",
+          "line": 7,
+          "kind": "import"
+        },
+        {
+          "source": "../../api/rag/lib/constants.js",
+          "line": 8,
+          "kind": "import"
+        }
+      ]
+    },
+    {
+      "rank": 32,
+      "file": "api/learning/lib/session-runtime/session-service.js",
+      "ext": ".js",
+      "loc": 990,
+      "bytes": 33671,
+      "isReact": false,
+      "importCount": 8,
+      "importLines": [
+        1,
+        9,
+        10,
+        11,
+        12,
+        19,
+        23,
+        24
+      ],
+      "hooks": {
+        "useState": 0,
+        "useRef": 0,
+        "useEffect": 0
+      },
+      "imports": [
+        {
+          "source": "node:crypto",
+          "line": 1,
+          "kind": "import"
+        },
+        {
+          "source": "../repositories/session-repository.js",
+          "line": 9,
+          "kind": "import"
+        },
+        {
+          "source": "../subjects/subject-adapter-registry.js",
+          "line": 10,
+          "kind": "import"
+        },
+        {
+          "source": "./session-anchor-resolution.js",
+          "line": 11,
+          "kind": "import"
+        },
+        {
+          "source": "./context-health.js",
+          "line": 12,
+          "kind": "import"
+        },
+        {
+          "source": "../contracts/error-contract.js",
+          "line": 19,
+          "kind": "import"
+        },
+        {
+          "source": "../validators/session-validator.js",
+          "line": 23,
+          "kind": "import"
+        },
+        {
+          "source": "../workspaces/paper-workspace-entry-resolver.js",
+          "line": 24,
+          "kind": "import"
+        }
+      ]
+    },
+    {
+      "rank": 33,
+      "file": "api/learning/lib/review/review-scheduler-policy.js",
+      "ext": ".js",
+      "loc": 963,
+      "bytes": 35648,
+      "isReact": false,
+      "importCount": 0,
+      "importLines": [],
+      "hooks": {
+        "useState": 0,
+        "useRef": 0,
+        "useEffect": 0
+      },
+      "imports": []
+    },
+    {
+      "rank": 34,
+      "file": "scripts/learning/build_9231_question_row_foundation.js",
+      "ext": ".js",
+      "loc": 950,
+      "bytes": 33526,
+      "isReact": false,
+      "importCount": 3,
+      "importLines": [
+        3,
+        4,
+        5
+      ],
+      "hooks": {
+        "useState": 0,
+        "useRef": 0,
+        "useEffect": 0
+      },
+      "imports": [
+        {
+          "source": "node:fs",
+          "line": 3,
+          "kind": "import"
+        },
+        {
+          "source": "node:path",
+          "line": 4,
+          "kind": "import"
+        },
+        {
+          "source": "node:url",
+          "line": 5,
+          "kind": "import"
+        }
+      ]
+    },
+    {
+      "rank": 35,
+      "file": "api/learning/lib/mastery/mastery-orchestrator.js",
+      "ext": ".js",
+      "loc": 949,
+      "bytes": 36759,
+      "isReact": false,
+      "importCount": 8,
+      "importLines": [
+        1,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        22
+      ],
+      "hooks": {
+        "useState": 0,
+        "useRef": 0,
+        "useEffect": 0
+      },
+      "imports": [
+        {
+          "source": "../contracts/runtime-contract.js",
+          "line": 1,
+          "kind": "import"
+        },
+        {
+          "source": "../artifacts/artifact-service.js",
+          "line": 12,
+          "kind": "import"
+        },
+        {
+          "source": "../repositories/artifact-repository.js",
+          "line": 13,
+          "kind": "import"
+        },
+        {
+          "source": "../repositories/artifact-content-repository.js",
+          "line": 14,
+          "kind": "import"
+        },
+        {
+          "source": "../reconciliation/reconciliation-service.js",
+          "line": 15,
+          "kind": "import"
+        },
+        {
+          "source": "../reconciliation/reconciliation-service.js",
+          "line": 16,
+          "kind": "import"
+        },
+        {
+          "source": "../subjects/subject-adapter-contract.js",
+          "line": 17,
+          "kind": "import"
+        },
+        {
+          "source": "../../../error-book/lib/error-book-service.js",
+          "line": 22,
+          "kind": "import"
+        }
+      ]
+    },
+    {
+      "rank": 36,
+      "file": "scripts/ao/lib/action-executor.js",
+      "ext": ".js",
+      "loc": 936,
+      "bytes": 31865,
+      "isReact": false,
+      "importCount": 4,
+      "importLines": [
+        1,
+        3,
+        4,
+        5
+      ],
+      "hooks": {
+        "useState": 0,
+        "useRef": 0,
+        "useEffect": 0
+      },
+      "imports": [
+        {
+          "source": "node:child_process",
+          "line": 1,
+          "kind": "import"
+        },
+        {
+          "source": "./blocked-notification-transport.js",
+          "line": 3,
+          "kind": "import"
+        },
+        {
+          "source": "./state-contracts.js",
+          "line": 4,
+          "kind": "import"
+        },
+        {
+          "source": "./run-metrics.js",
+          "line": 5,
+          "kind": "import"
+        }
+      ]
+    },
+    {
+      "rank": 37,
+      "file": "api/learning/__tests__/question-import-service.test.js",
+      "ext": ".js",
+      "loc": 934,
+      "bytes": 31403,
+      "isReact": false,
+      "importCount": 2,
+      "importLines": [
+        1,
+        2
+      ],
+      "hooks": {
+        "useState": 0,
+        "useRef": 0,
+        "useEffect": 0
+      },
+      "imports": [
+        {
+          "source": "@jest/globals",
+          "line": 1,
+          "kind": "import"
+        },
+        {
+          "source": "./loopback-test-client.js",
+          "line": 2,
+          "kind": "import"
+        }
+      ]
+    },
+    {
+      "rank": 38,
+      "file": "scripts/learning/build_9702_source_truth_inventory.js",
+      "ext": ".js",
+      "loc": 915,
+      "bytes": 34302,
+      "isReact": false,
+      "importCount": 5,
+      "importLines": [
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "hooks": {
+        "useState": 0,
+        "useRef": 0,
+        "useEffect": 0
+      },
+      "imports": [
+        {
+          "source": "node:child_process",
+          "line": 3,
+          "kind": "import"
+        },
+        {
+          "source": "node:crypto",
+          "line": 4,
+          "kind": "import"
+        },
+        {
+          "source": "node:fs",
+          "line": 5,
+          "kind": "import"
+        },
+        {
+          "source": "node:path",
+          "line": 6,
+          "kind": "import"
+        },
+        {
+          "source": "node:url",
+          "line": 7,
+          "kind": "import"
+        }
+      ]
+    },
+    {
+      "rank": 39,
+      "file": "scripts/ao/lib/lifecycle-engine.js",
+      "ext": ".js",
+      "loc": 912,
+      "bytes": 30801,
+      "isReact": false,
+      "importCount": 0,
+      "importLines": [],
+      "hooks": {
+        "useState": 0,
+        "useRef": 0,
+        "useEffect": 0
+      },
+      "imports": []
+    },
+    {
+      "rank": 40,
+      "file": "src/components/Settings/UserSettings.jsx",
+      "ext": ".jsx",
+      "loc": 902,
+      "bytes": 44202,
+      "isReact": true,
+      "importCount": 6,
+      "importLines": [
+        1,
+        2,
+        21,
+        22,
+        23,
+        24
+      ],
+      "hooks": {
+        "useState": 11,
+        "useRef": 0,
+        "useEffect": 1
+      },
+      "imports": [
+        {
+          "source": "react",
+          "line": 1,
+          "kind": "import"
+        },
+        {
+          "source": "framer-motion",
+          "line": 2,
+          "kind": "import"
+        },
+        {
+          "source": "../../contexts/AuthContext",
+          "line": 21,
+          "kind": "import"
+        },
+        {
+          "source": "../../utils/supabase",
+          "line": 22,
+          "kind": "import"
+        },
+        {
+          "source": "../../services/userProfileService",
+          "line": 23,
+          "kind": "import"
+        },
+        {
+          "source": "../Progress/ProgressTracker",
+          "line": 24,
+          "kind": "import"
+        }
+      ],
+      "hookDensity": 0.013303769401330377
+    },
+    {
+      "rank": 41,
+      "file": "api/learning/lib/artifacts/artifact-service.js",
+      "ext": ".js",
+      "loc": 869,
+      "bytes": 29674,
+      "isReact": false,
+      "importCount": 2,
+      "importLines": [
+        1,
+        10
+      ],
+      "hooks": {
+        "useState": 0,
+        "useRef": 0,
+        "useEffect": 0
+      },
+      "imports": [
+        {
+          "source": "../http/learning-http.js",
+          "line": 1,
+          "kind": "import"
+        },
+        {
+          "source": "../repositories/artifact-repository.js",
+          "line": 10,
+          "kind": "import"
+        }
+      ]
+    },
+    {
+      "rank": 42,
+      "file": "scripts/learning/run_9231_full_production_ready_aggregate_gate.js",
+      "ext": ".js",
+      "loc": 864,
+      "bytes": 40743,
+      "isReact": false,
+      "importCount": 4,
+      "importLines": [
+        3,
+        4,
+        5,
+        6
+      ],
+      "hooks": {
+        "useState": 0,
+        "useRef": 0,
+        "useEffect": 0
+      },
+      "imports": [
+        {
+          "source": "node:child_process",
+          "line": 3,
+          "kind": "import"
+        },
+        {
+          "source": "node:fs",
+          "line": 4,
+          "kind": "import"
+        },
+        {
+          "source": "node:path",
+          "line": 5,
+          "kind": "import"
+        },
+        {
+          "source": "node:url",
+          "line": 6,
+          "kind": "import"
+        }
+      ]
+    },
+    {
+      "rank": 43,
+      "file": "src/pages/TopicDetail.jsx",
+      "ext": ".jsx",
+      "loc": 845,
+      "bytes": 39041,
+      "isReact": true,
+      "importCount": 13,
+      "importLines": [
+        1,
+        2,
+        3,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27
+      ],
+      "hooks": {
+        "useState": 3,
+        "useRef": 0,
+        "useEffect": 1
+      },
+      "imports": [
+        {
+          "source": "react",
+          "line": 1,
+          "kind": "import"
+        },
+        {
+          "source": "react-router-dom",
+          "line": 2,
+          "kind": "import"
+        },
+        {
+          "source": "framer-motion",
+          "line": 3,
+          "kind": "import"
+        },
+        {
+          "source": "../data/9709paper1.json",
+          "line": 18,
+          "kind": "import"
+        },
+        {
+          "source": "../data/9709paper3.json",
+          "line": 19,
+          "kind": "import"
+        },
+        {
+          "source": "../data/9709paper4.json",
+          "line": 20,
+          "kind": "import"
+        },
+        {
+          "source": "../data/9709paper5.json",
+          "line": 21,
+          "kind": "import"
+        },
+        {
+          "source": "../data/9231FP1-syllabus.json",
+          "line": 22,
+          "kind": "import"
+        },
+        {
+          "source": "../data/9231FP2-syllabus.json",
+          "line": 23,
+          "kind": "import"
+        },
+        {
+          "source": "../data/9231FM-syllabus.json",
+          "line": 24,
+          "kind": "import"
+        },
+        {
+          "source": "../data/9231FS-syllabus.json",
+          "line": 25,
+          "kind": "import"
+        },
+        {
+          "source": "../utils/normalizeTopicId",
+          "line": 26,
+          "kind": "import"
+        },
+        {
+          "source": "../utils/supabase",
+          "line": 27,
+          "kind": "import"
+        }
+      ],
+      "hookDensity": 0.004733727810650888
+    },
+    {
+      "rank": 44,
+      "file": "src/pages/PhysicsTopicDetail.jsx",
+      "ext": ".jsx",
+      "loc": 838,
+      "bytes": 36630,
+      "isReact": true,
+      "importCount": 8,
+      "importLines": [
+        1,
+        2,
+        3,
+        20,
+        21,
+        22,
+        23,
+        24
+      ],
+      "hooks": {
+        "useState": 10,
+        "useRef": 0,
+        "useEffect": 4
+      },
+      "imports": [
+        {
+          "source": "react",
+          "line": 1,
+          "kind": "import"
+        },
+        {
+          "source": "react-router-dom",
+          "line": 2,
+          "kind": "import"
+        },
+        {
+          "source": "framer-motion",
+          "line": 3,
+          "kind": "import"
+        },
+        {
+          "source": "@tanstack/react-query",
+          "line": 20,
+          "kind": "import"
+        },
+        {
+          "source": "../contexts/AuthContext",
+          "line": 21,
+          "kind": "import"
+        },
+        {
+          "source": "../utils/supabase",
+          "line": 22,
+          "kind": "import"
+        },
+        {
+          "source": "../api/ragApi",
+          "line": 23,
+          "kind": "import"
+        },
+        {
+          "source": "../components/SearchResultCard",
+          "line": 24,
+          "kind": "import"
+        }
+      ],
+      "hookDensity": 0.016706443914081145
+    },
+    {
+      "rank": 45,
+      "file": "api/learning/__tests__/artifact-service.test.js",
+      "ext": ".js",
+      "loc": 832,
+      "bytes": 29802,
+      "isReact": false,
+      "importCount": 0,
+      "importLines": [],
+      "hooks": {
+        "useState": 0,
+        "useRef": 0,
+        "useEffect": 0
+      },
+      "imports": []
+    },
+    {
+      "rank": 46,
+      "file": "src/components/learning-runtime/WorkspaceShell.js",
+      "ext": ".js",
+      "loc": 830,
+      "bytes": 32128,
+      "isReact": true,
+      "importCount": 6,
+      "importLines": [
+        1,
+        2,
+        9,
+        10,
+        11,
+        12
+      ],
+      "hooks": {
+        "useState": 4,
+        "useRef": 0,
+        "useEffect": 1
+      },
+      "imports": [
+        {
+          "source": "react",
+          "line": 1,
+          "kind": "import"
+        },
+        {
+          "source": "../../lib/contracts/runtime-contract-client.js",
+          "line": 2,
+          "kind": "import"
+        },
+        {
+          "source": "./ArtifactInboxPanel.js",
+          "line": 9,
+          "kind": "import"
+        },
+        {
+          "source": "./ArtifactSupersedeSheet.js",
+          "line": 10,
+          "kind": "import"
+        },
+        {
+          "source": "./ReviewQueuePanel.js",
+          "line": 11,
+          "kind": "import"
+        },
+        {
+          "source": "./StableSlotPanel.js",
+          "line": 12,
+          "kind": "import"
+        }
+      ],
+      "hookDensity": 0.006024096385542169
+    },
+    {
+      "rank": 47,
+      "file": "scripts/learning/lib/question-analysis-backfill.js",
+      "ext": ".js",
+      "loc": 823,
+      "bytes": 31282,
+      "isReact": false,
+      "importCount": 6,
+      "importLines": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "hooks": {
+        "useState": 0,
+        "useRef": 0,
+        "useEffect": 0
+      },
+      "imports": [
+        {
+          "source": "node:crypto",
+          "line": 1,
+          "kind": "import"
+        },
+        {
+          "source": "../../../api/learning/lib/contracts/runtime-contract.js",
+          "line": 2,
+          "kind": "import"
+        },
+        {
+          "source": "../../../api/learning/lib/events/question-event-service.js",
+          "line": 3,
+          "kind": "import"
+        },
+        {
+          "source": "../../../api/learning/lib/import/question-import-service.js",
+          "line": 4,
+          "kind": "import"
+        },
+        {
+          "source": "../../../api/learning/lib/question-analysis/question-intelligence-service.js",
+          "line": 5,
+          "kind": "import"
+        },
+        {
+          "source": "../../../api/learning/lib/question-analysis/question-envelope-contract.js",
+          "line": 6,
+          "kind": "import"
+        }
+      ]
+    },
+    {
+      "rank": 48,
+      "file": "tests/ao/manage-runner.test.js",
+      "ext": ".js",
+      "loc": 821,
+      "bytes": 24990,
+      "isReact": false,
+      "importCount": 10,
+      "importLines": [
+        1,
+        2,
+        3,
+        5,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "hooks": {
+        "useState": 0,
+        "useRef": 0,
+        "useEffect": 0
+      },
+      "imports": [
+        {
+          "source": "node:fs",
+          "line": 1,
+          "kind": "import"
+        },
+        {
+          "source": "node:os",
+          "line": 2,
+          "kind": "import"
+        },
+        {
+          "source": "node:path",
+          "line": 3,
+          "kind": "import"
+        },
+        {
+          "source": "@jest/globals",
+          "line": 5,
+          "kind": "import"
+        },
+        {
+          "source": "../../scripts/ao/lib/checkpoint-store.js",
+          "line": 7,
+          "kind": "import"
+        },
+        {
+          "source": "../../scripts/ao/lib/handoff-protocol.js",
+          "line": 8,
+          "kind": "import"
+        },
+        {
+          "source": "../../scripts/ao/lib/review-protocol.js",
+          "line": 9,
+          "kind": "import"
+        },
+        {
+          "source": "../../scripts/ao/lib/state-migrations.js",
+          "line": 10,
+          "kind": "import"
+        },
+        {
+          "source": "../../scripts/ao/lib/manage-runner.js",
+          "line": 11,
+          "kind": "import"
+        },
+        {
+          "source": "../../scripts/ao/lib/state-repository.js",
+          "line": 12,
+          "kind": "import"
+        }
+      ]
+    },
+    {
+      "rank": 49,
+      "file": "scripts/learning/build_9231_question_plain_text_v1.js",
+      "ext": ".js",
+      "loc": 817,
+      "bytes": 29787,
+      "isReact": false,
+      "importCount": 3,
+      "importLines": [
+        3,
+        4,
+        5
+      ],
+      "hooks": {
+        "useState": 0,
+        "useRef": 0,
+        "useEffect": 0
+      },
+      "imports": [
+        {
+          "source": "node:fs",
+          "line": 3,
+          "kind": "import"
+        },
+        {
+          "source": "node:path",
+          "line": 4,
+          "kind": "import"
+        },
+        {
+          "source": "node:url",
+          "line": 5,
+          "kind": "import"
+        }
+      ]
+    },
+    {
+      "rank": 50,
+      "file": "scripts/learning/build_9231_next_wave_candidate_gate.js",
+      "ext": ".js",
+      "loc": 795,
+      "bytes": 30485,
+      "isReact": false,
+      "importCount": 3,
+      "importLines": [
+        3,
+        4,
+        5
+      ],
+      "hooks": {
+        "useState": 0,
+        "useRef": 0,
+        "useEffect": 0
+      },
+      "imports": [
+        {
+          "source": "node:fs",
+          "line": 3,
+          "kind": "import"
+        },
+        {
+          "source": "node:path",
+          "line": 4,
+          "kind": "import"
+        },
+        {
+          "source": "node:url",
+          "line": 5,
+          "kind": "import"
+        }
+      ]
+    }
+  ],
+  "topReactPages": [
+    {
+      "rank": 1,
+      "file": "src/components/Settings/UserSettings.jsx",
+      "ext": ".jsx",
+      "loc": 902,
+      "bytes": 44202,
+      "isReact": true,
+      "importCount": 6,
+      "importLines": [
+        1,
+        2,
+        21,
+        22,
+        23,
+        24
+      ],
+      "hooks": {
+        "useState": 11,
+        "useRef": 0,
+        "useEffect": 1
+      },
+      "imports": [
+        {
+          "source": "react",
+          "line": 1,
+          "kind": "import"
+        },
+        {
+          "source": "framer-motion",
+          "line": 2,
+          "kind": "import"
+        },
+        {
+          "source": "../../contexts/AuthContext",
+          "line": 21,
+          "kind": "import"
+        },
+        {
+          "source": "../../utils/supabase",
+          "line": 22,
+          "kind": "import"
+        },
+        {
+          "source": "../../services/userProfileService",
+          "line": 23,
+          "kind": "import"
+        },
+        {
+          "source": "../Progress/ProgressTracker",
+          "line": 24,
+          "kind": "import"
+        }
+      ],
+      "hookDensity": 0.013303769401330377
+    },
+    {
+      "rank": 2,
+      "file": "src/pages/TopicDetail.jsx",
+      "ext": ".jsx",
+      "loc": 845,
+      "bytes": 39041,
+      "isReact": true,
+      "importCount": 13,
+      "importLines": [
+        1,
+        2,
+        3,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27
+      ],
+      "hooks": {
+        "useState": 3,
+        "useRef": 0,
+        "useEffect": 1
+      },
+      "imports": [
+        {
+          "source": "react",
+          "line": 1,
+          "kind": "import"
+        },
+        {
+          "source": "react-router-dom",
+          "line": 2,
+          "kind": "import"
+        },
+        {
+          "source": "framer-motion",
+          "line": 3,
+          "kind": "import"
+        },
+        {
+          "source": "../data/9709paper1.json",
+          "line": 18,
+          "kind": "import"
+        },
+        {
+          "source": "../data/9709paper3.json",
+          "line": 19,
+          "kind": "import"
+        },
+        {
+          "source": "../data/9709paper4.json",
+          "line": 20,
+          "kind": "import"
+        },
+        {
+          "source": "../data/9709paper5.json",
+          "line": 21,
+          "kind": "import"
+        },
+        {
+          "source": "../data/9231FP1-syllabus.json",
+          "line": 22,
+          "kind": "import"
+        },
+        {
+          "source": "../data/9231FP2-syllabus.json",
+          "line": 23,
+          "kind": "import"
+        },
+        {
+          "source": "../data/9231FM-syllabus.json",
+          "line": 24,
+          "kind": "import"
+        },
+        {
+          "source": "../data/9231FS-syllabus.json",
+          "line": 25,
+          "kind": "import"
+        },
+        {
+          "source": "../utils/normalizeTopicId",
+          "line": 26,
+          "kind": "import"
+        },
+        {
+          "source": "../utils/supabase",
+          "line": 27,
+          "kind": "import"
+        }
+      ],
+      "hookDensity": 0.004733727810650888
+    },
+    {
+      "rank": 3,
+      "file": "src/pages/PhysicsTopicDetail.jsx",
+      "ext": ".jsx",
+      "loc": 838,
+      "bytes": 36630,
+      "isReact": true,
+      "importCount": 8,
+      "importLines": [
+        1,
+        2,
+        3,
+        20,
+        21,
+        22,
+        23,
+        24
+      ],
+      "hooks": {
+        "useState": 10,
+        "useRef": 0,
+        "useEffect": 4
+      },
+      "imports": [
+        {
+          "source": "react",
+          "line": 1,
+          "kind": "import"
+        },
+        {
+          "source": "react-router-dom",
+          "line": 2,
+          "kind": "import"
+        },
+        {
+          "source": "framer-motion",
+          "line": 3,
+          "kind": "import"
+        },
+        {
+          "source": "@tanstack/react-query",
+          "line": 20,
+          "kind": "import"
+        },
+        {
+          "source": "../contexts/AuthContext",
+          "line": 21,
+          "kind": "import"
+        },
+        {
+          "source": "../utils/supabase",
+          "line": 22,
+          "kind": "import"
+        },
+        {
+          "source": "../api/ragApi",
+          "line": 23,
+          "kind": "import"
+        },
+        {
+          "source": "../components/SearchResultCard",
+          "line": 24,
+          "kind": "import"
+        }
+      ],
+      "hookDensity": 0.016706443914081145
+    },
+    {
+      "rank": 4,
+      "file": "src/components/Navbar.jsx",
+      "ext": ".jsx",
+      "loc": 672,
+      "bytes": 31116,
+      "isReact": true,
+      "importCount": 8,
+      "importLines": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "hooks": {
+        "useState": 3,
+        "useRef": 1,
+        "useEffect": 1
+      },
+      "imports": [
+        {
+          "source": "react",
+          "line": 1,
+          "kind": "import"
+        },
+        {
+          "source": "react-router-dom",
+          "line": 2,
+          "kind": "import"
+        },
+        {
+          "source": "framer-motion",
+          "line": 3,
+          "kind": "import"
+        },
+        {
+          "source": "../contexts/ThemeContext",
+          "line": 4,
+          "kind": "import"
+        },
+        {
+          "source": "../contexts/AuthContext",
+          "line": 5,
+          "kind": "import"
+        },
+        {
+          "source": "./SearchBox",
+          "line": 6,
+          "kind": "import"
+        },
+        {
+          "source": "./ThemeToggle",
+          "line": 7,
+          "kind": "import"
+        },
+        {
+          "source": "./Auth/AuthModal",
+          "line": 8,
+          "kind": "import"
+        }
+      ],
+      "hookDensity": 0.00744047619047619
+    },
+    {
+      "rank": 5,
+      "file": "src/components/AI/PersonalizedRecommendations.jsx",
+      "ext": ".jsx",
+      "loc": 620,
+      "bytes": 25234,
+      "isReact": true,
+      "importCount": 7,
+      "importLines": [
+        6,
+        7,
+        26,
+        27,
+        28,
+        29,
+        30
+      ],
+      "hooks": {
+        "useState": 9,
+        "useRef": 0,
+        "useEffect": 1
+      },
+      "imports": [
+        {
+          "source": "react",
+          "line": 6,
+          "kind": "import"
+        },
+        {
+          "source": "framer-motion",
+          "line": 7,
+          "kind": "import"
+        },
+        {
+          "source": "../../contexts/AuthContext",
+          "line": 26,
+          "kind": "import"
+        },
+        {
+          "source": "../../services/contentRecommendationService",
+          "line": 27,
+          "kind": "import"
+        },
+        {
+          "source": "../../services/userBehaviorAnalytics",
+          "line": 28,
+          "kind": "import"
+        },
+        {
+          "source": "../../services/advancedRecommendationEngine",
+          "line": 29,
+          "kind": "import"
+        },
+        {
+          "source": "react-router-dom",
+          "line": 30,
+          "kind": "import"
+        }
+      ],
+      "hookDensity": 0.016129032258064516
+    },
+    {
+      "rank": 6,
+      "file": "src/pages/Landing.jsx",
+      "ext": ".jsx",
+      "loc": 552,
+      "bytes": 29415,
+      "isReact": true,
+      "importCount": 11,
+      "importLines": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "hooks": {
+        "useState": 1,
+        "useRef": 0,
+        "useEffect": 0
+      },
+      "imports": [
+        {
+          "source": "react",
+          "line": 1,
+          "kind": "import"
+        },
+        {
+          "source": "framer-motion",
+          "line": 2,
+          "kind": "import"
+        },
+        {
+          "source": "lucide-react",
+          "line": 3,
+          "kind": "import"
+        },
+        {
+          "source": "../contexts/ThemeContext",
+          "line": 4,
+          "kind": "import"
+        },
+        {
+          "source": "../components/AnimatedKeywords",
+          "line": 5,
+          "kind": "import"
+        },
+        {
+          "source": "../components/CoreFeatures",
+          "line": 6,
+          "kind": "import"
+        },
+        {
+          "source": "../components/PWAInstallButton",
+          "line": 7,
+          "kind": "import"
+        },
+        {
+          "source": "../components/RecommendedTopics",
+          "line": 8,
+          "kind": "import"
+        },
+        {
+          "source": "../components/ProgressDemo",
+          "line": 9,
+          "kind": "import"
+        },
+        {
+          "source": "../components/SuccessStories",
+          "line": 10,
+          "kind": "import"
+        },
+        {
+          "source": "../components/ui/aurora-background",
+          "line": 11,
+          "kind": "import"
+        }
+      ],
+      "hookDensity": 0.0018115942028985507
+    },
+    {
+      "rank": 7,
+      "file": "src/pages/PaperPage.jsx",
+      "ext": ".jsx",
+      "loc": 531,
+      "bytes": 23270,
+      "isReact": true,
+      "importCount": 7,
+      "importLines": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "hooks": {
+        "useState": 4,
+        "useRef": 0,
+        "useEffect": 1
+      },
+      "imports": [
+        {
+          "source": "react",
+          "line": 1,
+          "kind": "import"
+        },
+        {
+          "source": "react-router-dom",
+          "line": 2,
+          "kind": "import"
+        },
+        {
+          "source": "framer-motion",
+          "line": 3,
+          "kind": "import"
+        },
+        {
+          "source": "lucide-react",
+          "line": 4,
+          "kind": "import"
+        },
+        {
+          "source": "../components/TopicCard",
+          "line": 5,
+          "kind": "import"
+        },
+        {
+          "source": "../utils/supabase",
+          "line": 6,
+          "kind": "import"
+        },
+        {
+          "source": "../utils/normalizeTopicId",
+          "line": 7,
+          "kind": "import"
+        }
+      ],
+      "hookDensity": 0.009416195856873822
+    },
+    {
+      "rank": 8,
+      "file": "src/pages/learning-runtime/LearningSessionPage.jsx",
+      "ext": ".jsx",
+      "loc": 523,
+      "bytes": 17792,
+      "isReact": true,
+      "importCount": 5,
+      "importLines": [
+        7,
+        8,
+        15,
+        23,
+        24
+      ],
+      "hooks": {
+        "useState": 16,
+        "useRef": 8,
+        "useEffect": 6
+      },
+      "imports": [
+        {
+          "source": "lucide-react",
+          "line": 7,
+          "kind": "import"
+        },
+        {
+          "source": "react-router-dom",
+          "line": 8,
+          "kind": "import"
+        },
+        {
+          "source": "../../components/learning-runtime/ImportPostureBanner.js",
+          "line": 15,
+          "kind": "import"
+        },
+        {
+          "source": "../../components/learning-runtime/LearningSessionShell.js",
+          "line": 23,
+          "kind": "import"
+        },
+        {
+          "source": "../../components/learning-runtime/view-models/session-view-model.js",
+          "line": 24,
+          "kind": "import"
+        }
+      ],
+      "hookDensity": 0.05736137667304015
+    },
+    {
+      "rank": 9,
+      "file": "src/components/ChatWidget.jsx",
+      "ext": ".jsx",
+      "loc": 497,
+      "bytes": 20348,
+      "isReact": true,
+      "importCount": 8,
+      "importLines": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        14
+      ],
+      "hooks": {
+        "useState": 5,
+        "useRef": 2,
+        "useEffect": 5
+      },
+      "imports": [
+        {
+          "source": "react",
+          "line": 1,
+          "kind": "import"
+        },
+        {
+          "source": "framer-motion",
+          "line": 2,
+          "kind": "import"
+        },
+        {
+          "source": "lucide-react",
+          "line": 3,
+          "kind": "import"
+        },
+        {
+          "source": "react-router-dom",
+          "line": 4,
+          "kind": "import"
+        },
+        {
+          "source": "../hooks/useChat",
+          "line": 5,
+          "kind": "import"
+        },
+        {
+          "source": "./ErrorBookButton",
+          "line": 6,
+          "kind": "import"
+        },
+        {
+          "source": "../context/AIContext",
+          "line": 7,
+          "kind": "import"
+        },
+        {
+          "source": "./ui/multimodal-ai-chat-input",
+          "line": 14,
+          "kind": "import"
+        }
+      ],
+      "hookDensity": 0.02414486921529175
+    },
+    {
+      "rank": 10,
+      "file": "src/components/ui/multimodal-ai-chat-input.jsx",
+      "ext": ".jsx",
+      "loc": 416,
+      "bytes": 17785,
+      "isReact": true,
+      "importCount": 5,
+      "importLines": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "hooks": {
+        "useState": 2,
+        "useRef": 2,
+        "useEffect": 1
+      },
+      "imports": [
+        {
+          "source": "fast-deep-equal",
+          "line": 11,
+          "kind": "import"
+        },
+        {
+          "source": "framer-motion",
+          "line": 12,
+          "kind": "import"
+        },
+        {
+          "source": "lucide-react",
+          "line": 13,
+          "kind": "import"
+        },
+        {
+          "source": "class-variance-authority",
+          "line": 14,
+          "kind": "import"
+        },
+        {
+          "source": "tailwind-merge",
+          "line": 15,
+          "kind": "import"
+        }
+      ],
+      "hookDensity": 0.01201923076923077
+    },
+    {
+      "rank": 11,
+      "file": "src/components/CoreFeatures.jsx",
+      "ext": ".jsx",
+      "loc": 364,
+      "bytes": 15290,
+      "isReact": true,
+      "importCount": 3,
+      "importLines": [
+        1,
+        2,
+        16
+      ],
+      "hooks": {
+        "useState": 1,
+        "useRef": 0,
+        "useEffect": 0
+      },
+      "imports": [
+        {
+          "source": "react",
+          "line": 1,
+          "kind": "import"
+        },
+        {
+          "source": "framer-motion",
+          "line": 2,
+          "kind": "import"
+        },
+        {
+          "source": "../contexts/ThemeContext",
+          "line": 16,
+          "kind": "import"
+        }
+      ],
+      "hookDensity": 0.0027472527472527475
+    },
+    {
+      "rank": 12,
+      "file": "src/components/Recommendations/PersonalizedRecommendations.jsx",
+      "ext": ".jsx",
+      "loc": 347,
+      "bytes": 13503,
+      "isReact": true,
+      "importCount": 4,
+      "importLines": [
+        1,
+        2,
+        12,
+        13
+      ],
+      "hooks": {
+        "useState": 5,
+        "useRef": 0,
+        "useEffect": 1
+      },
+      "imports": [
+        {
+          "source": "react",
+          "line": 1,
+          "kind": "import"
+        },
+        {
+          "source": "framer-motion",
+          "line": 2,
+          "kind": "import"
+        },
+        {
+          "source": "../../contexts/AuthContext",
+          "line": 12,
+          "kind": "import"
+        },
+        {
+          "source": "./recommendations-client.js",
+          "line": 13,
+          "kind": "import"
+        }
+      ],
+      "hookDensity": 0.01729106628242075
+    },
+    {
+      "rank": 13,
+      "file": "src/pages/FurtherMathematicsTopics.jsx",
+      "ext": ".jsx",
+      "loc": 346,
+      "bytes": 15380,
+      "isReact": true,
+      "importCount": 8,
+      "importLines": [
+        1,
+        2,
+        3,
+        4,
+        7,
+        8,
+        9,
+        10
+      ],
+      "hooks": {
+        "useState": 2,
+        "useRef": 0,
+        "useEffect": 0
+      },
+      "imports": [
+        {
+          "source": "react",
+          "line": 1,
+          "kind": "import"
+        },
+        {
+          "source": "framer-motion",
+          "line": 2,
+          "kind": "import"
+        },
+        {
+          "source": "lucide-react",
+          "line": 3,
+          "kind": "import"
+        },
+        {
+          "source": "react-router-dom",
+          "line": 4,
+          "kind": "import"
+        },
+        {
+          "source": "../data/9231FP1-syllabus.json",
+          "line": 7,
+          "kind": "import"
+        },
+        {
+          "source": "../data/9231FP2-syllabus.json",
+          "line": 8,
+          "kind": "import"
+        },
+        {
+          "source": "../data/9231FM-syllabus.json",
+          "line": 9,
+          "kind": "import"
+        },
+        {
+          "source": "../data/9231FS-syllabus.json",
+          "line": 10,
+          "kind": "import"
+        }
+      ],
+      "hookDensity": 0.005780346820809248
+    },
+    {
+      "rank": 14,
+      "file": "src/components/Progress/ProgressTracker.jsx",
+      "ext": ".jsx",
+      "loc": 331,
+      "bytes": 12592,
+      "isReact": true,
+      "importCount": 4,
+      "importLines": [
+        1,
+        2,
+        15,
+        16
+      ],
+      "hooks": {
+        "useState": 3,
+        "useRef": 0,
+        "useEffect": 1
+      },
+      "imports": [
+        {
+          "source": "react",
+          "line": 1,
+          "kind": "import"
+        },
+        {
+          "source": "framer-motion",
+          "line": 2,
+          "kind": "import"
+        },
+        {
+          "source": "../../contexts/AuthContext",
+          "line": 15,
+          "kind": "import"
+        },
+        {
+          "source": "../../services/userProfileService",
+          "line": 16,
+          "kind": "import"
+        }
+      ],
+      "hookDensity": 0.012084592145015106
+    },
+    {
+      "rank": 15,
+      "file": "src/pages/MathematicsTopics.jsx",
+      "ext": ".jsx",
+      "loc": 320,
+      "bytes": 14169,
+      "isReact": true,
+      "importCount": 7,
+      "importLines": [
+        1,
+        2,
+        3,
+        6,
+        7,
+        8,
+        9
+      ],
+      "hooks": {
+        "useState": 2,
+        "useRef": 0,
+        "useEffect": 0
+      },
+      "imports": [
+        {
+          "source": "react",
+          "line": 1,
+          "kind": "import"
+        },
+        {
+          "source": "framer-motion",
+          "line": 2,
+          "kind": "import"
+        },
+        {
+          "source": "lucide-react",
+          "line": 3,
+          "kind": "import"
+        },
+        {
+          "source": "../data/9709paper1.json",
+          "line": 6,
+          "kind": "import"
+        },
+        {
+          "source": "../data/9709paper3.json",
+          "line": 7,
+          "kind": "import"
+        },
+        {
+          "source": "../data/9709paper4.json",
+          "line": 8,
+          "kind": "import"
+        },
+        {
+          "source": "../data/9709paper5.json",
+          "line": 9,
+          "kind": "import"
+        }
+      ],
+      "hookDensity": 0.00625
+    },
+    {
+      "rank": 16,
+      "file": "src/components/SearchBox.jsx",
+      "ext": ".jsx",
+      "loc": 303,
+      "bytes": 12467,
+      "isReact": true,
+      "importCount": 13,
+      "importLines": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "hooks": {
+        "useState": 4,
+        "useRef": 2,
+        "useEffect": 2
+      },
+      "imports": [
+        {
+          "source": "react",
+          "line": 1,
+          "kind": "import"
+        },
+        {
+          "source": "react-router-dom",
+          "line": 2,
+          "kind": "import"
+        },
+        {
+          "source": "framer-motion",
+          "line": 3,
+          "kind": "import"
+        },
+        {
+          "source": "lucide-react",
+          "line": 4,
+          "kind": "import"
+        },
+        {
+          "source": "../hooks/useLocalStorage",
+          "line": 5,
+          "kind": "import"
+        },
+        {
+          "source": "../data/9709paper1.json",
+          "line": 8,
+          "kind": "import"
+        },
+        {
+          "source": "../data/9709paper3.json",
+          "line": 9,
+          "kind": "import"
+        },
+        {
+          "source": "../data/9709paper4.json",
+          "line": 10,
+          "kind": "import"
+        },
+        {
+          "source": "../data/9709paper5.json",
+          "line": 11,
+          "kind": "import"
+        },
+        {
+          "source": "../data/9231FP1-syllabus.json",
+          "line": 12,
+          "kind": "import"
+        },
+        {
+          "source": "../data/9231FP2-syllabus.json",
+          "line": 13,
+          "kind": "import"
+        },
+        {
+          "source": "../data/9231FM-syllabus.json",
+          "line": 14,
+          "kind": "import"
+        },
+        {
+          "source": "../data/9231FS-syllabus.json",
+          "line": 15,
+          "kind": "import"
+        }
+      ],
+      "hookDensity": 0.026402640264026403
+    },
+    {
+      "rank": 17,
+      "file": "src/pages/PhysicsTopics.jsx",
+      "ext": ".jsx",
+      "loc": 270,
+      "bytes": 12507,
+      "isReact": true,
+      "importCount": 4,
+      "importLines": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "hooks": {
+        "useState": 2,
+        "useRef": 0,
+        "useEffect": 0
+      },
+      "imports": [
+        {
+          "source": "react",
+          "line": 1,
+          "kind": "import"
+        },
+        {
+          "source": "framer-motion",
+          "line": 2,
+          "kind": "import"
+        },
+        {
+          "source": "lucide-react",
+          "line": 3,
+          "kind": "import"
+        },
+        {
+          "source": "react-router-dom",
+          "line": 4,
+          "kind": "import"
+        }
+      ],
+      "hookDensity": 0.007407407407407408
+    },
+    {
+      "rank": 18,
+      "file": "src/pages/Pricing.jsx",
+      "ext": ".jsx",
+      "loc": 261,
+      "bytes": 9992,
+      "isReact": true,
+      "importCount": 5,
+      "importLines": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "hooks": {
+        "useState": 0,
+        "useRef": 0,
+        "useEffect": 0
+      },
+      "imports": [
+        {
+          "source": "react",
+          "line": 1,
+          "kind": "import"
+        },
+        {
+          "source": "framer-motion",
+          "line": 2,
+          "kind": "import"
+        },
+        {
+          "source": "lucide-react",
+          "line": 3,
+          "kind": "import"
+        },
+        {
+          "source": "../components/ui/aurora-background",
+          "line": 4,
+          "kind": "import"
+        },
+        {
+          "source": "../contexts/ThemeContext",
+          "line": 5,
+          "kind": "import"
+        }
+      ]
+    },
+    {
+      "rank": 19,
+      "file": "src/components/Auth/SignupForm.jsx",
+      "ext": ".jsx",
+      "loc": 251,
+      "bytes": 10196,
+      "isReact": true,
+      "importCount": 3,
+      "importLines": [
+        1,
+        2,
+        3
+      ],
+      "hooks": {
+        "useState": 4,
+        "useRef": 0,
+        "useEffect": 0
+      },
+      "imports": [
+        {
+          "source": "react",
+          "line": 1,
+          "kind": "import"
+        },
+        {
+          "source": "framer-motion",
+          "line": 2,
+          "kind": "import"
+        },
+        {
+          "source": "lucide-react",
+          "line": 3,
+          "kind": "import"
+        }
+      ],
+      "hookDensity": 0.01593625498007968
+    },
+    {
+      "rank": 20,
+      "file": "src/pages/learning-runtime/TopicWorkspacePage.jsx",
+      "ext": ".jsx",
+      "loc": 236,
+      "bytes": 8107,
+      "isReact": true,
+      "importCount": 6,
+      "importLines": [
+        1,
+        2,
+        3,
+        8,
+        9,
+        10
+      ],
+      "hooks": {
+        "useState": 5,
+        "useRef": 0,
+        "useEffect": 1
+      },
+      "imports": [
+        {
+          "source": "react",
+          "line": 1,
+          "kind": "import"
+        },
+        {
+          "source": "lucide-react",
+          "line": 2,
+          "kind": "import"
+        },
+        {
+          "source": "react-router-dom",
+          "line": 3,
+          "kind": "import"
+        },
+        {
+          "source": "../../components/learning-runtime/WorkspaceShell.js",
+          "line": 8,
+          "kind": "import"
+        },
+        {
+          "source": "../../components/learning-runtime/view-models/review-queue-view-model.js",
+          "line": 9,
+          "kind": "import"
+        },
+        {
+          "source": "../../components/learning-runtime/view-models/workspace-view-model.js",
+          "line": 10,
+          "kind": "import"
+        }
+      ],
+      "hookDensity": 0.025423728813559324
+    },
+    {
+      "rank": 21,
+      "file": "src/components/SuccessStories.jsx",
+      "ext": ".jsx",
+      "loc": 235,
+      "bytes": 11088,
+      "isReact": true,
+      "importCount": 3,
+      "importLines": [
+        1,
+        2,
+        3
+      ],
+      "hooks": {
+        "useState": 2,
+        "useRef": 0,
+        "useEffect": 1
+      },
+      "imports": [
+        {
+          "source": "react",
+          "line": 1,
+          "kind": "import"
+        },
+        {
+          "source": "framer-motion",
+          "line": 2,
+          "kind": "import"
+        },
+        {
+          "source": "lucide-react",
+          "line": 3,
+          "kind": "import"
+        }
+      ],
+      "hookDensity": 0.01276595744680851
+    },
+    {
+      "rank": 22,
+      "file": "src/pages/SubjectSelection.jsx",
+      "ext": ".jsx",
+      "loc": 219,
+      "bytes": 11037,
+      "isReact": true,
+      "importCount": 4,
+      "importLines": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "hooks": {
+        "useState": 0,
+        "useRef": 0,
+        "useEffect": 0
+      },
+      "imports": [
+        {
+          "source": "react",
+          "line": 1,
+          "kind": "import"
+        },
+        {
+          "source": "framer-motion",
+          "line": 2,
+          "kind": "import"
+        },
+        {
+          "source": "lucide-react",
+          "line": 3,
+          "kind": "import"
+        },
+        {
+          "source": "react-router-dom",
+          "line": 4,
+          "kind": "import"
+        }
+      ]
+    },
+    {
+      "rank": 23,
+      "file": "src/pages/learning-runtime/ReviewQueuePage.jsx",
+      "ext": ".jsx",
+      "loc": 219,
+      "bytes": 7640,
+      "isReact": true,
+      "importCount": 5,
+      "importLines": [
+        1,
+        2,
+        3,
+        8,
+        13
+      ],
+      "hooks": {
+        "useState": 5,
+        "useRef": 0,
+        "useEffect": 1
+      },
+      "imports": [
+        {
+          "source": "react",
+          "line": 1,
+          "kind": "import"
+        },
+        {
+          "source": "lucide-react",
+          "line": 2,
+          "kind": "import"
+        },
+        {
+          "source": "react-router-dom",
+          "line": 3,
+          "kind": "import"
+        },
+        {
+          "source": "../../components/learning-runtime/ReviewQueuePanel.js",
+          "line": 8,
+          "kind": "import"
+        },
+        {
+          "source": "../legacy-entry-mode.js",
+          "line": 13,
+          "kind": "import"
+        }
+      ],
+      "hookDensity": 0.0273972602739726
+    },
+    {
+      "rank": 24,
+      "file": "src/components/ThemeToggle.jsx",
+      "ext": ".jsx",
+      "loc": 217,
+      "bytes": 9115,
+      "isReact": true,
+      "importCount": 4,
+      "importLines": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "hooks": {
+        "useState": 1,
+        "useRef": 0,
+        "useEffect": 0
+      },
+      "imports": [
+        {
+          "source": "react",
+          "line": 1,
+          "kind": "import"
+        },
+        {
+          "source": "framer-motion",
+          "line": 2,
+          "kind": "import"
+        },
+        {
+          "source": "lucide-react",
+          "line": 3,
+          "kind": "import"
+        },
+        {
+          "source": "../contexts/ThemeContext",
+          "line": 4,
+          "kind": "import"
+        }
+      ],
+      "hookDensity": 0.004608294930875576
+    },
+    {
+      "rank": 25,
+      "file": "src/pages/AskAI.jsx",
+      "ext": ".jsx",
+      "loc": 186,
+      "bytes": 8928,
+      "isReact": true,
+      "importCount": 5,
+      "importLines": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "hooks": {
+        "useState": 0,
+        "useRef": 0,
+        "useEffect": 0
+      },
+      "imports": [
+        {
+          "source": "react",
+          "line": 1,
+          "kind": "import"
+        },
+        {
+          "source": "framer-motion",
+          "line": 2,
+          "kind": "import"
+        },
+        {
+          "source": "lucide-react",
+          "line": 3,
+          "kind": "import"
+        },
+        {
+          "source": "react-router-dom",
+          "line": 4,
+          "kind": "import"
+        },
+        {
+          "source": "../components/ChatPanel",
+          "line": 5,
+          "kind": "import"
+        }
+      ]
+    },
+    {
+      "rank": 26,
+      "file": "src/pages/PhysicsA2Level.jsx",
+      "ext": ".jsx",
+      "loc": 178,
+      "bytes": 7552,
+      "isReact": true,
+      "importCount": 5,
+      "importLines": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "hooks": {
+        "useState": 0,
+        "useRef": 0,
+        "useEffect": 0
+      },
+      "imports": [
+        {
+          "source": "react",
+          "line": 1,
+          "kind": "import"
+        },
+        {
+          "source": "react-router-dom",
+          "line": 2,
+          "kind": "import"
+        },
+        {
+          "source": "framer-motion",
+          "line": 3,
+          "kind": "import"
+        },
+        {
+          "source": "lucide-react",
+          "line": 4,
+          "kind": "import"
+        },
+        {
+          "source": "../components/TopicCard",
+          "line": 5,
+          "kind": "import"
+        }
+      ]
+    },
+    {
+      "rank": 27,
+      "file": "src/pages/PhysicsASLevel.jsx",
+      "ext": ".jsx",
+      "loc": 178,
+      "bytes": 7474,
+      "isReact": true,
+      "importCount": 5,
+      "importLines": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "hooks": {
+        "useState": 0,
+        "useRef": 0,
+        "useEffect": 0
+      },
+      "imports": [
+        {
+          "source": "react",
+          "line": 1,
+          "kind": "import"
+        },
+        {
+          "source": "react-router-dom",
+          "line": 2,
+          "kind": "import"
+        },
+        {
+          "source": "framer-motion",
+          "line": 3,
+          "kind": "import"
+        },
+        {
+          "source": "lucide-react",
+          "line": 4,
+          "kind": "import"
+        },
+        {
+          "source": "../components/TopicCard",
+          "line": 5,
+          "kind": "import"
+        }
+      ]
+    },
+    {
+      "rank": 28,
+      "file": "src/pages/FurtherMathematicsPapers.jsx",
+      "ext": ".jsx",
+      "loc": 177,
+      "bytes": 7574,
+      "isReact": true,
+      "importCount": 4,
+      "importLines": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "hooks": {
+        "useState": 0,
+        "useRef": 0,
+        "useEffect": 0
+      },
+      "imports": [
+        {
+          "source": "react",
+          "line": 1,
+          "kind": "import"
+        },
+        {
+          "source": "framer-motion",
+          "line": 2,
+          "kind": "import"
+        },
+        {
+          "source": "react-router-dom",
+          "line": 3,
+          "kind": "import"
+        },
+        {
+          "source": "lucide-react",
+          "line": 4,
+          "kind": "import"
+        }
+      ]
+    },
+    {
+      "rank": 29,
+      "file": "src/pages/MathematicsPapers.jsx",
+      "ext": ".jsx",
+      "loc": 177,
+      "bytes": 7560,
+      "isReact": true,
+      "importCount": 4,
+      "importLines": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "hooks": {
+        "useState": 0,
+        "useRef": 0,
+        "useEffect": 0
+      },
+      "imports": [
+        {
+          "source": "react",
+          "line": 1,
+          "kind": "import"
+        },
+        {
+          "source": "framer-motion",
+          "line": 2,
+          "kind": "import"
+        },
+        {
+          "source": "react-router-dom",
+          "line": 3,
+          "kind": "import"
+        },
+        {
+          "source": "lucide-react",
+          "line": 4,
+          "kind": "import"
+        }
+      ]
+    },
+    {
+      "rank": 30,
+      "file": "src/components/Auth/LoginForm.jsx",
+      "ext": ".jsx",
+      "loc": 170,
+      "bytes": 6427,
+      "isReact": true,
+      "importCount": 3,
+      "importLines": [
+        1,
+        2,
+        3
+      ],
+      "hooks": {
+        "useState": 3,
+        "useRef": 0,
+        "useEffect": 0
+      },
+      "imports": [
+        {
+          "source": "react",
+          "line": 1,
+          "kind": "import"
+        },
+        {
+          "source": "framer-motion",
+          "line": 2,
+          "kind": "import"
+        },
+        {
+          "source": "lucide-react",
+          "line": 3,
+          "kind": "import"
+        }
+      ],
+      "hookDensity": 0.01764705882352941
+    }
+  ],
+  "topFunctions": [
+    {
+      "rank": 1,
+      "file": "src/components/Settings/UserSettings.jsx",
+      "name": "UserSettings",
+      "kind": "arrow_const",
+      "startLine": 27,
+      "endLine": 975,
+      "loc": 949,
+      "signatureLine": "const UserSettings = () => {",
+      "likelyHandler": false
+    },
+    {
+      "rank": 2,
+      "file": "src/pages/TopicDetail.jsx",
+      "name": "TopicDetail",
+      "kind": "arrow_const",
+      "startLine": 29,
+      "endLine": 887,
+      "loc": 859,
+      "signatureLine": "const TopicDetail = () => {",
+      "likelyHandler": false
+    },
+    {
+      "rank": 3,
+      "file": "src/pages/PhysicsTopicDetail.jsx",
+      "name": "PhysicsTopicDetail",
+      "kind": "arrow_const",
+      "startLine": 28,
+      "endLine": 660,
+      "loc": 633,
+      "signatureLine": "const PhysicsTopicDetail = () => {",
+      "likelyHandler": false
+    },
+    {
+      "rank": 4,
+      "file": "scripts/learning/lib/browser-closed-loop-fixture.js",
+      "name": "createClosedLoopLearningDb",
+      "kind": "function_decl",
+      "startLine": 596,
+      "endLine": 1197,
+      "loc": 602,
+      "signatureLine": "export function createClosedLoopLearningDb(fixture = buildBrowserClosedLoopFixture()) {",
+      "likelyHandler": false
+    },
+    {
+      "rank": 5,
+      "file": "src/pages/Landing.jsx",
+      "name": "Landing",
+      "kind": "arrow_const",
+      "startLine": 13,
+      "endLine": 598,
+      "loc": 586,
+      "signatureLine": "const Landing = () => {",
+      "likelyHandler": false
+    },
+    {
+      "rank": 6,
+      "file": "src/pages/PaperPage.jsx",
+      "name": "PaperPage",
+      "kind": "arrow_const",
+      "startLine": 12,
+      "endLine": 568,
+      "loc": 557,
+      "signatureLine": "const PaperPage = () => {",
+      "likelyHandler": false
+    },
+    {
+      "rank": 7,
+      "file": "scripts/learning/run_9709_diagram_review_server.js",
+      "name": "renderReviewHtml",
+      "kind": "function_decl",
+      "startLine": 189,
+      "endLine": 686,
+      "loc": 498,
+      "signatureLine": "function renderReviewHtml() {",
+      "likelyHandler": false
+    },
+    {
+      "rank": 8,
+      "file": "api/learning/__tests__/workspace-read-service.test.js",
+      "name": "createBoundaryLearningDb",
+      "kind": "function_decl",
+      "startLine": 690,
+      "endLine": 1183,
+      "loc": 494,
+      "signatureLine": "function createBoundaryLearningDb() {",
+      "likelyHandler": false
+    },
+    {
+      "rank": 9,
+      "file": "scripts/learning/lib/browser-closed-loop-fixture.js",
+      "name": "resolveQuery",
+      "kind": "function_decl",
+      "startLine": 668,
+      "endLine": 1143,
+      "loc": 476,
+      "signatureLine": "function resolveQuery(query) {",
+      "likelyHandler": false
+    },
+    {
+      "rank": 10,
+      "file": "scripts/rag/run_s1_1_benchmark.js",
+      "name": "main",
+      "kind": "function_decl",
+      "startLine": 264,
+      "endLine": 651,
+      "loc": 388,
+      "signatureLine": "async function main() {",
+      "likelyHandler": false
+    },
+    {
+      "rank": 11,
+      "file": "src/pages/FurtherMathematicsTopics.jsx",
+      "name": "FurtherMathematicsTopics",
+      "kind": "arrow_const",
+      "startLine": 12,
+      "endLine": 369,
+      "loc": 358,
+      "signatureLine": "const FurtherMathematicsTopics = () => {",
+      "likelyHandler": false
+    },
+    {
+      "rank": 12,
+      "file": "src/components/Progress/ProgressTracker.jsx",
+      "name": "ProgressTracker",
+      "kind": "arrow_const",
+      "startLine": 19,
+      "endLine": 355,
+      "loc": 337,
+      "signatureLine": "const ProgressTracker = () => {",
+      "likelyHandler": false
+    },
+    {
+      "rank": 13,
+      "file": "src/pages/MathematicsTopics.jsx",
+      "name": "MathematicsTopics",
+      "kind": "arrow_const",
+      "startLine": 11,
+      "endLine": 341,
+      "loc": 331,
+      "signatureLine": "const MathematicsTopics = () => {",
+      "likelyHandler": false
+    },
+    {
+      "rank": 14,
+      "file": "src/components/learning-runtime/__tests__/view-models.test.js",
+      "name": "createWorkspacePayload",
+      "kind": "function_decl",
+      "startLine": 119,
+      "endLine": 433,
+      "loc": 315,
+      "signatureLine": "function createWorkspacePayload() {",
+      "likelyHandler": false
+    },
+    {
+      "rank": 15,
+      "file": "src/pages/TopicDetail.jsx",
+      "name": "generateKeyPoints",
+      "kind": "arrow_const",
+      "startLine": 58,
+      "endLine": 353,
+      "loc": 296,
+      "signatureLine": "const generateKeyPoints = (topicName) => {",
+      "likelyHandler": false
+    },
+    {
+      "rank": 16,
+      "file": "api/learning/__tests__/artifact-service.test.js",
+      "name": "createArtifactRepositoryFixture",
+      "kind": "function_decl",
+      "startLine": 7,
+      "endLine": 300,
+      "loc": 294,
+      "signatureLine": "function createArtifactRepositoryFixture() {",
+      "likelyHandler": false
+    },
+    {
+      "rank": 17,
+      "file": "src/pages/PhysicsTopics.jsx",
+      "name": "PhysicsTopics",
+      "kind": "arrow_const",
+      "startLine": 10,
+      "endLine": 292,
+      "loc": 283,
+      "signatureLine": "const PhysicsTopics = () => {",
+      "likelyHandler": false
+    },
+    {
+      "rank": 18,
+      "file": "src/components/learning-runtime/__tests__/WorkspaceShell.test.js",
+      "name": "createWorkspacePayload",
+      "kind": "function_decl",
+      "startLine": 20,
+      "endLine": 293,
+      "loc": 274,
+      "signatureLine": "function createWorkspacePayload() {",
+      "likelyHandler": false
+    },
+    {
+      "rank": 19,
+      "file": "src/pages/Pricing.jsx",
+      "name": "Pricing",
+      "kind": "arrow_const",
+      "startLine": 7,
+      "endLine": 276,
+      "loc": 270,
+      "signatureLine": "const Pricing = () => {",
+      "likelyHandler": false
+    },
+    {
+      "rank": 20,
+      "file": "scripts/learning/__tests__/question-analysis-backfill.test.js",
+      "name": "createBackfillClient",
+      "kind": "function_decl",
+      "startLine": 3,
+      "endLine": 260,
+      "loc": 258,
+      "signatureLine": "function createBackfillClient() {",
+      "likelyHandler": false
+    },
+    {
+      "rank": 21,
+      "file": "scripts/rag/lib/curriculum-nodes-quality-audit.js",
+      "name": "auditCurriculumNodes",
+      "kind": "function_decl",
+      "startLine": 34,
+      "endLine": 290,
+      "loc": 257,
+      "signatureLine": "export function auditCurriculumNodes(rows = [], manualSample = null) {",
+      "likelyHandler": false
+    },
+    {
+      "rank": 22,
+      "file": "scripts/syllabus/generate-9709-canonical-topic-tree-draft-v1.js",
+      "name": "buildDraft",
+      "kind": "function_decl",
+      "startLine": 444,
+      "endLine": 681,
+      "loc": 238,
+      "signatureLine": "function buildDraft() {",
+      "likelyHandler": false
+    },
+    {
+      "rank": 23,
+      "file": "src/pages/SubjectSelection.jsx",
+      "name": "SubjectSelection",
+      "kind": "arrow_const",
+      "startLine": 6,
+      "endLine": 234,
+      "loc": 229,
+      "signatureLine": "const SubjectSelection = () => {",
+      "likelyHandler": false
+    },
+    {
+      "rank": 24,
+      "file": "api/marking/lib/ledger-orchestrator.js",
+      "name": "writeLedger",
+      "kind": "function_decl",
+      "startLine": 41,
+      "endLine": 260,
+      "loc": 220,
+      "signatureLine": "export async function writeLedger(params) {",
+      "likelyHandler": false
+    },
+    {
+      "rank": 25,
+      "file": "api/learning/__tests__/workspace-read-service.test.js",
+      "name": "resolveQuery",
+      "kind": "function_decl",
+      "startLine": 839,
+      "endLine": 1056,
+      "loc": 218,
+      "signatureLine": "function resolveQuery(query) {",
+      "likelyHandler": false
+    },
+    {
+      "rank": 26,
+      "file": "api/rag/lib/config.js",
+      "name": "getRagConfig",
+      "kind": "function_decl",
+      "startLine": 60,
+      "endLine": 255,
+      "loc": 196,
+      "signatureLine": "export function getRagConfig() {",
+      "likelyHandler": false
+    },
+    {
+      "rank": 27,
+      "file": "scripts/rag/run_question_aware_chunk_pilot.js",
+      "name": "main",
+      "kind": "function_decl",
+      "startLine": 118,
+      "endLine": 312,
+      "loc": 195,
+      "signatureLine": "async function main() {",
+      "likelyHandler": false
+    },
+    {
+      "rank": 28,
+      "file": "api/learning/__tests__/workspace-repository.test.js",
+      "name": "createWorkspaceDb",
+      "kind": "function_decl",
+      "startLine": 9,
+      "endLine": 202,
+      "loc": 194,
+      "signatureLine": "function createWorkspaceDb() {",
+      "likelyHandler": false
+    },
+    {
+      "rank": 29,
+      "file": "src/pages/AskAI.jsx",
+      "name": "AskAI",
+      "kind": "arrow_const",
+      "startLine": 11,
+      "endLine": 200,
+      "loc": 190,
+      "signatureLine": "const AskAI = () => {",
+      "likelyHandler": false
+    },
+    {
+      "rank": 30,
+      "file": "scripts/rag/run_step3_production_population_pilot.js",
+      "name": "main",
+      "kind": "function_decl",
+      "startLine": 125,
+      "endLine": 308,
+      "loc": 184,
+      "signatureLine": "function main() {",
+      "likelyHandler": false
+    }
+  ],
+  "hookDensity": [
+    {
+      "rank": 1,
+      "file": "src/components/AI/PersonalizedRecommendations.jsx",
+      "loc": 620,
+      "useState": 9,
+      "useRef": 0,
+      "useEffect": 1,
+      "hooksTotal": 10,
+      "hooksDensity": 0.016129032258064516
+    },
+    {
+      "rank": 2,
+      "file": "src/components/Auth/SignupForm.jsx",
+      "loc": 251,
+      "useState": 4,
+      "useRef": 0,
+      "useEffect": 0,
+      "hooksTotal": 4,
+      "hooksDensity": 0.01593625498007968
+    },
+    {
+      "rank": 3,
+      "file": "src/components/ChatPanel.jsx",
+      "loc": 166,
+      "useState": 6,
+      "useRef": 1,
+      "useEffect": 3,
+      "hooksTotal": 10,
+      "hooksDensity": 0.060240963855421686
+    },
+    {
+      "rank": 4,
+      "file": "src/components/ChatWidget.jsx",
+      "loc": 497,
+      "useState": 5,
+      "useRef": 2,
+      "useEffect": 5,
+      "hooksTotal": 12,
+      "hooksDensity": 0.02414486921529175
+    },
+    {
+      "rank": 5,
+      "file": "src/components/Navbar.jsx",
+      "loc": 672,
+      "useState": 3,
+      "useRef": 1,
+      "useEffect": 1,
+      "hooksTotal": 5,
+      "hooksDensity": 0.00744047619047619
+    },
+    {
+      "rank": 6,
+      "file": "src/components/PWAInstallButton.jsx",
+      "loc": 164,
+      "useState": 4,
+      "useRef": 0,
+      "useEffect": 1,
+      "hooksTotal": 5,
+      "hooksDensity": 0.03048780487804878
+    },
+    {
+      "rank": 7,
+      "file": "src/components/Progress/ProgressTracker.jsx",
+      "loc": 331,
+      "useState": 3,
+      "useRef": 0,
+      "useEffect": 1,
+      "hooksTotal": 4,
+      "hooksDensity": 0.012084592145015106
+    },
+    {
+      "rank": 8,
+      "file": "src/components/Recommendations/PersonalizedRecommendations.jsx",
+      "loc": 347,
+      "useState": 5,
+      "useRef": 0,
+      "useEffect": 1,
+      "hooksTotal": 6,
+      "hooksDensity": 0.01729106628242075
+    },
+    {
+      "rank": 9,
+      "file": "src/components/SearchBox.jsx",
+      "loc": 303,
+      "useState": 4,
+      "useRef": 2,
+      "useEffect": 2,
+      "hooksTotal": 8,
+      "hooksDensity": 0.026402640264026403
+    },
+    {
+      "rank": 10,
+      "file": "src/components/Settings/UserSettings.jsx",
+      "loc": 902,
+      "useState": 11,
+      "useRef": 0,
+      "useEffect": 1,
+      "hooksTotal": 12,
+      "hooksDensity": 0.013303769401330377
+    },
+    {
+      "rank": 11,
+      "file": "src/components/learning-runtime/WorkspaceShell.js",
+      "loc": 830,
+      "useState": 4,
+      "useRef": 0,
+      "useEffect": 1,
+      "hooksTotal": 5,
+      "hooksDensity": 0.006024096385542169
+    },
+    {
+      "rank": 12,
+      "file": "src/components/ui/multimodal-ai-chat-input.jsx",
+      "loc": 416,
+      "useState": 2,
+      "useRef": 2,
+      "useEffect": 1,
+      "hooksTotal": 5,
+      "hooksDensity": 0.01201923076923077
+    },
+    {
+      "rank": 13,
+      "file": "src/contexts/AuthContext.jsx",
+      "loc": 193,
+      "useState": 3,
+      "useRef": 0,
+      "useEffect": 1,
+      "hooksTotal": 4,
+      "hooksDensity": 0.02072538860103627
+    },
+    {
+      "rank": 14,
+      "file": "src/contexts/ThemeContext.jsx",
+      "loc": 323,
+      "useState": 3,
+      "useRef": 0,
+      "useEffect": 3,
+      "hooksTotal": 6,
+      "hooksDensity": 0.018575851393188854
+    },
+    {
+      "rank": 15,
+      "file": "src/hooks/useChat.js",
+      "loc": 137,
+      "useState": 3,
+      "useRef": 2,
+      "useEffect": 1,
+      "hooksTotal": 6,
+      "hooksDensity": 0.043795620437956206
+    },
+    {
+      "rank": 16,
+      "file": "src/pages/PaperPage.jsx",
+      "loc": 531,
+      "useState": 4,
+      "useRef": 0,
+      "useEffect": 1,
+      "hooksTotal": 5,
+      "hooksDensity": 0.009416195856873822
+    },
+    {
+      "rank": 17,
+      "file": "src/pages/PhysicsTopicDetail.jsx",
+      "loc": 838,
+      "useState": 10,
+      "useRef": 0,
+      "useEffect": 4,
+      "hooksTotal": 14,
+      "hooksDensity": 0.016706443914081145
+    },
+    {
+      "rank": 18,
+      "file": "src/pages/Search.jsx",
+      "loc": 132,
+      "useState": 4,
+      "useRef": 2,
+      "useEffect": 3,
+      "hooksTotal": 9,
+      "hooksDensity": 0.06818181818181818
+    },
+    {
+      "rank": 19,
+      "file": "src/pages/StudyHub.jsx",
+      "loc": 145,
+      "useState": 3,
+      "useRef": 0,
+      "useEffect": 1,
+      "hooksTotal": 4,
+      "hooksDensity": 0.027586206896551724
+    },
+    {
+      "rank": 20,
+      "file": "src/pages/SubjectPage.jsx",
+      "loc": 102,
+      "useState": 4,
+      "useRef": 0,
+      "useEffect": 1,
+      "hooksTotal": 5,
+      "hooksDensity": 0.049019607843137254
+    },
+    {
+      "rank": 21,
+      "file": "src/pages/TopicDetail.jsx",
+      "loc": 845,
+      "useState": 3,
+      "useRef": 0,
+      "useEffect": 1,
+      "hooksTotal": 4,
+      "hooksDensity": 0.004733727810650888
+    },
+    {
+      "rank": 22,
+      "file": "src/pages/learning-runtime/LearningSessionPage.jsx",
+      "loc": 523,
+      "useState": 16,
+      "useRef": 8,
+      "useEffect": 6,
+      "hooksTotal": 30,
+      "hooksDensity": 0.05736137667304015
+    },
+    {
+      "rank": 23,
+      "file": "src/pages/learning-runtime/ReviewQueuePage.jsx",
+      "loc": 219,
+      "useState": 5,
+      "useRef": 0,
+      "useEffect": 1,
+      "hooksTotal": 6,
+      "hooksDensity": 0.0273972602739726
+    },
+    {
+      "rank": 24,
+      "file": "src/pages/learning-runtime/TopicWorkspacePage.jsx",
+      "loc": 236,
+      "useState": 5,
+      "useRef": 0,
+      "useEffect": 1,
+      "hooksTotal": 6,
+      "hooksDensity": 0.025423728813559324
+    }
+  ],
+  "highImportCount": [
+    {
+      "rank": 1,
+      "file": "api/rag/lib/ask-service.js",
+      "loc": 1336,
+      "importCount": 24,
+      "importLines": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24
+      ]
+    },
+    {
+      "rank": 2,
+      "file": "scripts/ao/lib/eval-harness.js",
+      "loc": 1202,
+      "importCount": 20,
+      "importLines": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        30
+      ]
+    },
+    {
+      "rank": 3,
+      "file": "tests/ao/controller-shadow-parity.test.js",
+      "loc": 245,
+      "importCount": 16,
+      "importLines": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        24
+      ]
+    },
+    {
+      "rank": 4,
+      "file": "api/marking/evaluate-v1.js",
+      "loc": 585,
+      "importCount": 13,
+      "importLines": [
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18
+      ]
+    },
+    {
+      "rank": 5,
+      "file": "scripts/ao/lib/controller-loop.js",
+      "loc": 1595,
+      "importCount": 13,
+      "importLines": [
+        1,
+        10,
+        11,
+        18,
+        19,
+        20,
+        21,
+        22,
+        37,
+        38,
+        39,
+        40,
+        49
+      ]
+    },
+    {
+      "rank": 6,
+      "file": "src/App.jsx",
+      "loc": 134,
+      "importCount": 13,
+      "importLines": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ]
+    },
+    {
+      "rank": 7,
+      "file": "src/components/SearchBox.jsx",
+      "loc": 303,
+      "importCount": 13,
+      "importLines": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ]
+    },
+    {
+      "rank": 8,
+      "file": "src/pages/TopicDetail.jsx",
+      "loc": 845,
+      "importCount": 13,
+      "importLines": [
+        1,
+        2,
+        3,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27
+      ]
+    },
+    {
+      "rank": 9,
+      "file": "src/pages/Landing.jsx",
+      "loc": 552,
+      "importCount": 11,
+      "importLines": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "rank": 10,
+      "file": "api/index.js",
+      "loc": 238,
+      "importCount": 10,
+      "importLines": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ]
+    },
+    {
+      "rank": 11,
+      "file": "scripts/ao/lib/state-runner.js",
+      "loc": 383,
+      "importCount": 10,
+      "importLines": [
+        1,
+        2,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        15
+      ]
+    },
+    {
+      "rank": 12,
+      "file": "tests/ao/manage-runner.test.js",
+      "loc": 821,
+      "importCount": 10,
+      "importLines": [
+        1,
+        2,
+        3,
+        5,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ]
+    },
+    {
+      "rank": 13,
+      "file": "scripts/rag/lib/production-evidence-promotion-bridge.js",
+      "loc": 454,
+      "importCount": 9,
+      "importLines": [
+        1,
+        2,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ]
+    },
+    {
+      "rank": 14,
+      "file": "api/learning/lib/mastery/mastery-orchestrator.js",
+      "loc": 949,
+      "importCount": 8,
+      "importLines": [
+        1,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        22
+      ]
+    },
+    {
+      "rank": 15,
+      "file": "api/learning/lib/session-runtime/session-service.js",
+      "loc": 990,
+      "importCount": 8,
+      "importLines": [
+        1,
+        9,
+        10,
+        11,
+        12,
+        19,
+        23,
+        24
+      ]
+    },
+    {
+      "rank": 16,
+      "file": "scripts/learning/lib/closed-loop-release-gate.js",
+      "loc": 453,
+      "importCount": 8,
+      "importLines": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "rank": 17,
+      "file": "scripts/rag/run_s2_augmentation_eval.js",
+      "loc": 517,
+      "importCount": 8,
+      "importLines": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        15
+      ]
+    },
+    {
+      "rank": 18,
+      "file": "scripts/rag/run_s2_c1_classifier_gate.js",
+      "loc": 253,
+      "importCount": 8,
+      "importLines": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ]
+    },
+    {
+      "rank": 19,
+      "file": "scripts/rag_ingest.js",
+      "loc": 1122,
+      "importCount": 8,
+      "importLines": [
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13
+      ]
+    },
+    {
+      "rank": 20,
+      "file": "src/components/ChatWidget.jsx",
+      "loc": 497,
+      "importCount": 8,
+      "importLines": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        14
+      ]
+    },
+    {
+      "rank": 21,
+      "file": "src/components/Navbar.jsx",
+      "loc": 672,
+      "importCount": 8,
+      "importLines": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "rank": 22,
+      "file": "src/pages/FurtherMathematicsTopics.jsx",
+      "loc": 346,
+      "importCount": 8,
+      "importLines": [
+        1,
+        2,
+        3,
+        4,
+        7,
+        8,
+        9,
+        10
+      ]
+    },
+    {
+      "rank": 23,
+      "file": "src/pages/PhysicsTopicDetail.jsx",
+      "loc": 838,
+      "importCount": 8,
+      "importLines": [
+        1,
+        2,
+        3,
+        20,
+        21,
+        22,
+        23,
+        24
+      ]
+    },
+    {
+      "rank": 24,
+      "file": "tests/ao/state-runner.test.js",
+      "loc": 1047,
+      "importCount": 8,
+      "importLines": [
+        1,
+        2,
+        3,
+        5,
+        7,
+        8,
+        22,
+        23
+      ]
+    }
+  ],
+  "largeTests": [
+    {
+      "rank": 1,
+      "file": "api/learning/__tests__/workspace-read-service.test.js",
+      "loc": 3307,
+      "importCount": 1,
+      "hookCount": 0
+    },
+    {
+      "rank": 2,
+      "file": "api/rag/__tests__/ask-service.test.js",
+      "loc": 2246,
+      "importCount": 4,
+      "hookCount": 0
+    },
+    {
+      "rank": 3,
+      "file": "tests/ao/controller-loop.test.js",
+      "loc": 2173,
+      "importCount": 7,
+      "hookCount": 0
+    },
+    {
+      "rank": 4,
+      "file": "api/learning/__tests__/session-api.test.js",
+      "loc": 1480,
+      "importCount": 3,
+      "hookCount": 0
+    },
+    {
+      "rank": 5,
+      "file": "src/components/learning-runtime/__tests__/view-models.test.js",
+      "loc": 1474,
+      "importCount": 2,
+      "hookCount": 0
+    },
+    {
+      "rank": 6,
+      "file": "scripts/learning/__tests__/question-analysis-backfill.test.js",
+      "loc": 1466,
+      "importCount": 1,
+      "hookCount": 0
+    },
+    {
+      "rank": 7,
+      "file": "api/learning/__tests__/review-task-service.test.js",
+      "loc": 1415,
+      "importCount": 2,
+      "hookCount": 0
+    },
+    {
+      "rank": 8,
+      "file": "api/learning/__tests__/attempt-event-service.test.js",
+      "loc": 1325,
+      "importCount": 0,
+      "hookCount": 0
+    },
+    {
+      "rank": 9,
+      "file": "src/api/__tests__/learningRuntimeApi.test.js",
+      "loc": 1089,
+      "importCount": 2,
+      "hookCount": 0
+    },
+    {
+      "rank": 10,
+      "file": "tests/ao/state-runner.test.js",
+      "loc": 1047,
+      "importCount": 8,
+      "hookCount": 0
+    },
+    {
+      "rank": 11,
+      "file": "tests/ao/action-executor.test.js",
+      "loc": 1017,
+      "importCount": 5,
+      "hookCount": 0
+    },
+    {
+      "rank": 12,
+      "file": "api/marking/__tests__/evaluate-v1.test.js",
+      "loc": 1016,
+      "importCount": 1,
+      "hookCount": 0
+    },
+    {
+      "rank": 13,
+      "file": "scripts/evaluation/__tests__/question-search-gate.test.js",
+      "loc": 1015,
+      "importCount": 2,
+      "hookCount": 0
+    },
+    {
+      "rank": 14,
+      "file": "api/learning/__tests__/question-import-service.test.js",
+      "loc": 934,
+      "importCount": 2,
+      "hookCount": 0
+    },
+    {
+      "rank": 15,
+      "file": "api/learning/__tests__/artifact-service.test.js",
+      "loc": 832,
+      "importCount": 0,
+      "hookCount": 0
+    },
+    {
+      "rank": 16,
+      "file": "tests/ao/manage-runner.test.js",
+      "loc": 821,
+      "importCount": 10,
+      "hookCount": 0
+    },
+    {
+      "rank": 17,
+      "file": "tests/ao/state-repository.test.js",
+      "loc": 736,
+      "importCount": 5,
+      "hookCount": 0
+    },
+    {
+      "rank": 18,
+      "file": "tests/evidence-ledger/aggregation.pbt.test.js",
+      "loc": 720,
+      "importCount": 2,
+      "hookCount": 0
+    },
+    {
+      "rank": 19,
+      "file": "scripts/learning/__tests__/paper-question-registry-backfill.test.js",
+      "loc": 706,
+      "importCount": 1,
+      "hookCount": 0
+    },
+    {
+      "rank": 20,
+      "file": "api/error-book/__tests__/error-book-api.test.js",
+      "loc": 701,
+      "importCount": 1,
+      "hookCount": 0
+    },
+    {
+      "rank": 21,
+      "file": "tests/ao/lifecycle-engine.test.js",
+      "loc": 649,
+      "importCount": 3,
+      "hookCount": 0
+    },
+    {
+      "rank": 22,
+      "file": "scripts/rag/__tests__/corpus-schema-compat.test.js",
+      "loc": 636,
+      "importCount": 1,
+      "hookCount": 0
+    },
+    {
+      "rank": 23,
+      "file": "tests/ao/state-contracts.test.js",
+      "loc": 633,
+      "importCount": 1,
+      "hookCount": 0
+    },
+    {
+      "rank": 24,
+      "file": "scripts/learning/__tests__/question-evidence-bundle-v1.test.js",
+      "loc": 600,
+      "importCount": 0,
+      "hookCount": 0
+    },
+    {
+      "rank": 25,
+      "file": "tests/evidence-ledger/error-event-writer.pbt.test.js",
+      "loc": 586,
+      "importCount": 2,
+      "hookCount": 0
+    },
+    {
+      "rank": 26,
+      "file": "src/components/learning-runtime/__tests__/WorkspaceShell.test.js",
+      "loc": 577,
+      "importCount": 4,
+      "hookCount": 0
+    },
+    {
+      "rank": 27,
+      "file": "tests/evidence-ledger/decision-writer.pbt.test.js",
+      "loc": 544,
+      "importCount": 3,
+      "hookCount": 0
+    },
+    {
+      "rank": 28,
+      "file": "api/learning/__tests__/paper-workspace-entry-resolver.test.js",
+      "loc": 532,
+      "importCount": 0,
+      "hookCount": 0
+    },
+    {
+      "rank": 29,
+      "file": "tests/evidence-ledger/attempt-repository.pbt.test.js",
+      "loc": 525,
+      "importCount": 2,
+      "hookCount": 0
+    },
+    {
+      "rank": 30,
+      "file": "api/learning/__tests__/schema-contract.test.js",
+      "loc": 517,
+      "importCount": 2,
+      "hookCount": 0
+    }
+  ],
+  "dependency": {
+    "externalTopPackages": [
+      {
+        "pkg": "node:path",
+        "fileCount": 297,
+        "files": [
+          "api/__tests__/api-route-integration.test.js",
+          "api/_runtime/__tests__/route-registry-retirements.test.js",
+          "api/learning/__tests__/p3-rubric-validator.test.js",
+          "api/learning/__tests__/question-intelligence-service.test.js",
+          "api/learning/lib/contracts/released-family-gate.js",
+          "api/learning/lib/marking/contracts/p3-rubric-validator.js",
+          "api/marking/__tests__/decision-engine-v1-ft-cao.test.js",
+          "api/marking/lib/marking-semantics-v1.js",
+          "api/marking/lib/rubric-resolver-v1.js",
+          "api/rag/__tests__/ask-service.test.js",
+          "api/rag/__tests__/marking-isolation.test.js",
+          "api/rag/__tests__/retirements.test.js",
+          "api/rag/__tests__/telemetry-recorder.test.js",
+          "api/rag/lib/ask-service.js",
+          "api/rag/lib/config.js",
+          "api/rag/lib/s2-local-classifier.js",
+          "api/rag/lib/telemetry-jsonl-sink.js",
+          "api/recommendations/__tests__/productionization.test.js",
+          "scripts/ao-controller.js",
+          "scripts/ao-doctor.js",
+          "scripts/ao-eval.js",
+          "scripts/ao-handoff.js",
+          "scripts/ao-knowledge.js",
+          "scripts/ao-lifecycle.js",
+          "scripts/ao-manage.js",
+          "scripts/ao-metrics.js",
+          "scripts/ao-override.js",
+          "scripts/ao-reconcile.js",
+          "scripts/ao-review.js",
+          "scripts/ao-state.js",
+          "scripts/ao/lib/debt-report.js",
+          "scripts/ao/lib/doctor-local-state-source.js",
+          "scripts/ao/lib/eval-harness.js",
+          "scripts/ao/lib/fixture-support.js",
+          "scripts/ao/lib/repo-knowledge.js",
+          "scripts/ao/lib/repo-root.js",
+          "scripts/ao/lib/runtime-preflight.js",
+          "scripts/ao/lib/scorecard.js",
+          "scripts/ao/lib/state-migrations.js",
+          "scripts/ao/lib/state-repository.js",
+          "scripts/ao/lib/state-runner.js",
+          "scripts/ao/lib/state-storage.js",
+          "scripts/ao/run-operator-smoke.js",
+          "scripts/evaluation/__tests__/question-search-gate.test.js",
+          "scripts/evaluation/run_question_search_gate.js",
+          "scripts/learning/__tests__/9231-report-artifact-hygiene.test.js",
+          "scripts/learning/__tests__/9702-physics-authority-contract.test.js",
+          "scripts/learning/__tests__/9709-diagram-human-review.test.js",
+          "scripts/learning/__tests__/9709-release-preflight.test.js",
+          "scripts/learning/__tests__/9709-surface-triage-rerun.test.js",
+          "scripts/learning/__tests__/build-9231-authority-alignment-wave1.test.js",
+          "scripts/learning/__tests__/build-9231-evidence-layers-wave1-gate.test.js",
+          "scripts/learning/__tests__/build-9231-next-wave-candidate-gate.test.js",
+          "scripts/learning/__tests__/build-9231-production-ready-wave1-gate.test.js",
+          "scripts/learning/__tests__/build-9231-question-plain-text-v1.test.js",
+          "scripts/learning/__tests__/build-9231-question-shard-split.test.js",
+          "scripts/learning/__tests__/build-9231-question-text-foundation-inventory.test.js",
+          "scripts/learning/__tests__/build-9231-visual-review-wave1-gate.test.js",
+          "scripts/learning/__tests__/build-9231-wm-final-evidence-layers-gate.test.js",
+          "scripts/learning/__tests__/build-9231-wm-final-visual-review-gate.test.js",
+          "scripts/learning/__tests__/build-9231-wm-source-freeze-gate.test.js",
+          "scripts/learning/__tests__/build-9231-wm-source-remediation-gate.test.js",
+          "scripts/learning/__tests__/build-9702-authority-alignment.test.js",
+          "scripts/learning/__tests__/build-9702-evidence-layers-gate.test.js",
+          "scripts/learning/__tests__/build-9702-question-plain-text-v1.test.js",
+          "scripts/learning/__tests__/build-9702-source-truth-inventory.test.js",
+          "scripts/learning/__tests__/build-9709-question-plain-text-v1.test.js",
+          "scripts/learning/__tests__/build-9709-question-plain-text-v2.test.js",
+          "scripts/learning/__tests__/closed-loop-release-gate.test.js",
+          "scripts/learning/__tests__/event-pipeline-gate.test.js",
+          "scripts/learning/__tests__/question-plain-text-v2-consumption.test.js",
+          "scripts/learning/__tests__/released-family-gate.test.js",
+          "scripts/learning/__tests__/run-9231-question-plain-text-v2-consumption-gate.test.js",
+          "scripts/learning/__tests__/run-9702-question-plain-text-v2-consumption-gate.test.js",
+          "scripts/learning/__tests__/run-9709-authority-ready-batch.test.js",
+          "scripts/learning/__tests__/run-9709-release-preflight.test.js",
+          "scripts/learning/__tests__/run-9709-wave1-search-closure.test.js",
+          "scripts/learning/__tests__/run-paper-question-registry-backfill.test.js",
+          "scripts/learning/__tests__/run-question-analysis-backfill.test.js",
+          "scripts/learning/__tests__/run-question-evidence-bundle-v1.test.js",
+          "scripts/learning/__tests__/run-wave-a-projection-audit.test.js",
+          "scripts/learning/__tests__/run-wave-a-shard-reset.test.js",
+          "scripts/learning/build_9231_authority_alignment_wave1.js",
+          "scripts/learning/build_9231_evidence_layers_wave1_gate.js",
+          "scripts/learning/build_9231_next_wave_candidate_gate.js",
+          "scripts/learning/build_9231_production_ready_wave1_gate.js",
+          "scripts/learning/build_9231_question_plain_text_v1.js",
+          "scripts/learning/build_9231_question_row_foundation.js",
+          "scripts/learning/build_9231_question_shard_split.js",
+          "scripts/learning/build_9231_question_text_foundation_inventory.js",
+          "scripts/learning/build_9231_visual_review_wave1_gate.js",
+          "scripts/learning/build_9231_wm_final_evidence_layers_gate.js",
+          "scripts/learning/build_9231_wm_final_visual_review_gate.js",
+          "scripts/learning/build_9231_wm_source_freeze_gate.js",
+          "scripts/learning/build_9231_wm_source_remediation_gate.js",
+          "scripts/learning/build_9702_authority_alignment.js",
+          "scripts/learning/build_9702_evidence_layers_gate.js",
+          "scripts/learning/build_9702_question_plain_text_v1.js",
+          "scripts/learning/build_9702_source_truth_inventory.js",
+          "scripts/learning/build_9709_question_plain_text_v1.js",
+          "scripts/learning/build_9709_question_plain_text_v2.js",
+          "scripts/learning/lib/9709-diagram-human-review.js",
+          "scripts/learning/lib/browser-closed-loop-fixture.js",
+          "scripts/learning/lib/closed-loop-release-gate.js",
+          "scripts/learning/lib/event-pipeline-gate.js",
+          "scripts/learning/lib/question-evidence-bundle-v1.js",
+          "scripts/learning/lib/question-plain-text-v2-consumption.js",
+          "scripts/learning/lib/windows-host-node-path.js",
+          "scripts/learning/run_9231_full_production_ready_aggregate_gate.js",
+          "scripts/learning/run_9231_question_plain_text_v2_consumption_gate.js",
+          "scripts/learning/run_9231_wave4_production_ready_gate.js",
+          "scripts/learning/run_9702_full_production_ready_aggregate_gate.js",
+          "scripts/learning/run_9702_production_ready_gate.js",
+          "scripts/learning/run_9702_question_plain_text_v2_consumption_gate.js",
+          "scripts/learning/run_9709_authority_ready_batch.js",
+          "scripts/learning/run_9709_diagram_review_server.js",
+          "scripts/learning/run_9709_full_production_ready_aggregate_gate.js",
+          "scripts/learning/run_9709_new_paper_v2_production_ready_aggregate_gate.js",
+          "scripts/learning/run_9709_question_plain_text_v2_consumption_gate.js",
+          "scripts/learning/run_9709_release_preflight.js",
+          "scripts/learning/run_9709_wave1_search_closure.js",
+          "scripts/learning/run_closed_loop_release_gate.js",
+          "scripts/learning/run_event_pipeline_gate.js",
+          "scripts/learning/run_paper_question_registry_backfill.js",
+          "scripts/learning/run_question_analysis_backfill.js",
+          "scripts/learning/run_question_evidence_bundle_v1.js",
+          "scripts/learning/run_released_family_gate.js",
+          "scripts/learning/run_wave_a_projection_audit.js",
+          "scripts/learning/run_wave_a_shard_reset.js",
+          "scripts/learning/seed_browser_closed_loop_fixture.js",
+          "scripts/phase1/run_evaluate_v1_smoke.js",
+          "scripts/phase2/generate_route_matrix.js",
+          "scripts/phase2/migrate_supabase_to_factory.js",
+          "scripts/phase2/preflight_backend_baseline.js",
+          "scripts/phase2/run_api_route_integration_summary.js",
+          "scripts/phase2/run_evidence_ledger_regression.js",
+          "scripts/phase2/run_security_baseline_report.js",
+          "scripts/phase2/scan_security_redaction.js",
+          "scripts/phase3/run_error_book_contract_gate.js",
+          "scripts/phase3/run_post_rag_s1_preflight.js",
+          "scripts/phase3/run_recommendations_production_gate.js",
+          "scripts/phase3/run_security_depth_gate.js",
+          "scripts/phase3/run_shared_rate_limit_gate.js",
+          "scripts/rag/__tests__/boundary-db-guardrail-config.test.js",
+          "scripts/rag/__tests__/build-step3-retrieval-availability-sample.test.js",
+          "scripts/rag/__tests__/evidence-draft-promotion-candidate.test.js",
+          "scripts/rag/__tests__/evidence-draft-review.test.js",
+          "scripts/rag/__tests__/production-evidence-first-online-rollout-verification.test.js",
+          "scripts/rag/__tests__/production-evidence-ingest-preflight.test.js",
+          "scripts/rag/__tests__/production-evidence-ingest.test.js",
+          "scripts/rag/__tests__/production-evidence-manifest.test.js",
+          "scripts/rag/__tests__/production-evidence-promotion-bridge.test.js",
+          "scripts/rag/__tests__/production-evidence-ready-ingest-contract.test.js",
+          "scripts/rag/__tests__/production-evidence-release-gate.test.js",
+          "scripts/rag/__tests__/production-evidence-rollout-gate.test.js",
+          "scripts/rag/__tests__/production-evidence-rollout-status.test.js",
+          "scripts/rag/__tests__/production-evidence-whitelist.test.js",
+          "scripts/rag/__tests__/run-evidence-draft-promotion-candidate.test.js",
+          "scripts/rag/__tests__/run-evidence-draft-review-scaffold.test.js",
+          "scripts/rag/__tests__/run-production-evidence-first-online-rollout-verification.test.js",
+          "scripts/rag/__tests__/run-production-evidence-promotion-bridge.test.js",
+          "scripts/rag/__tests__/run-production-evidence-rollout-gate.test.js",
+          "scripts/rag/__tests__/run-production-evidence-rollout-status.test.js",
+          "scripts/rag/__tests__/run-telemetry-audit.test.js",
+          "scripts/rag/__tests__/s1-contract-gate-workflow.test.js",
+          "scripts/rag/__tests__/s1-metric-gate-workflow.test.js",
+          "scripts/rag/__tests__/s1_2_dataset.test.js",
+          "scripts/rag/__tests__/s2-eval-summary-schema.test.js",
+          "scripts/rag/__tests__/s2-release-governance-gate.test.js",
+          "scripts/rag/__tests__/s2-workflow-invariant.test.js",
+          "scripts/rag/__tests__/telemetry-audit.test.js",
+          "scripts/rag/build_live_benchmark_set.js",
+          "scripts/rag/build_restricted_official_batch_plan.js",
+          "scripts/rag/build_s1_1_broader_qa_set.js",
+          "scripts/rag/build_s1_2_syllabus_qa_core_set.js",
+          "scripts/rag/build_s1_3_forced_retrieval_set.js",
+          "scripts/rag/build_s2_augmentation_eval_set.js",
+          "scripts/rag/build_s2_readiness_profile.js",
+          "scripts/rag/build_step3_retrieval_availability_sample.js",
+          "scripts/rag/lib/cli-paths.js",
+          "scripts/rag/lib/evidence-draft-promotion-candidate.js",
+          "scripts/rag/lib/evidence-draft-review.js",
+          "scripts/rag/lib/production-evidence-bundle.js",
+          "scripts/rag/lib/production-evidence-promotion-bridge.js",
+          "scripts/rag/lib/production-evidence-promotion-receipt.js",
+          "scripts/rag/lib/production-source-inventory.js",
+          "scripts/rag/lib/s2_eval_summary_schema_check.js",
+          "scripts/rag/run_boundary_contract_summary.js",
+          "scripts/rag/run_canonical_chunk_contract.js",
+          "scripts/rag/run_canonical_schema_compat_smoke.js",
+          "scripts/rag/run_corpus_audit.js",
+          "scripts/rag/run_corpus_source_coverage.js",
+          "scripts/rag/run_curriculum_nodes_quality_audit.js",
+          "scripts/rag/run_db_push_dry_run_plan.js",
+          "scripts/rag/run_evidence_draft_promotion_candidate.js",
+          "scripts/rag/run_evidence_draft_review_scaffold.js",
+          "scripts/rag/run_live_benchmark.js",
+          "scripts/rag/run_live_stability_summary.js",
+          "scripts/rag/run_marking_isolation_summary.js",
+          "scripts/rag/run_migration_execution_matrix.js",
+          "scripts/rag/run_pdf_ingest_probe.js",
+          "scripts/rag/run_production_evidence_first_online_rollout_verification.js",
+          "scripts/rag/run_production_evidence_governance_preflight.js",
+          "scripts/rag/run_production_evidence_governance_status.js",
+          "scripts/rag/run_production_evidence_ingest.js",
+          "scripts/rag/run_production_evidence_ingest_preflight.js",
+          "scripts/rag/run_production_evidence_manifest_check.js",
+          "scripts/rag/run_production_evidence_post_write_audit.js",
+          "scripts/rag/run_production_evidence_promotion_bridge.js",
+          "scripts/rag/run_production_evidence_release_gate.js",
+          "scripts/rag/run_production_evidence_rollout_gate.js",
+          "scripts/rag/run_production_evidence_rollout_status.js",
+          "scripts/rag/run_production_evidence_whitelist_check.js",
+          "scripts/rag/run_production_source_inventory.js",
+          "scripts/rag/run_s1_1_benchmark.js",
+          "scripts/rag/run_s1_2_benchmark.js",
+          "scripts/rag/run_s1_2_decision.js",
+          "scripts/rag/run_s1_2_preflight.js",
+          "scripts/rag/run_s1_3_forced_retrieval_benchmark.js",
+          "scripts/rag/run_s1_3_preflight.js",
+          "scripts/rag/run_s1_3_production_source_posture.js",
+          "scripts/rag/run_s1_3_regression_gate.js",
+          "scripts/rag/run_s1_3_s2_go_no_go_decision.js",
+          "scripts/rag/run_s1_contract_gate.js",
+          "scripts/rag/run_s1_metric_gate.js",
+          "scripts/rag/run_s1_metric_gate_summary.js",
+          "scripts/rag/run_s1_preflight.js",
+          "scripts/rag/run_s2_advisory_gate.js",
+          "scripts/rag/run_s2_augmentation_eval.js",
+          "scripts/rag/run_s2_c1_classifier_gate.js",
+          "scripts/rag/run_s2_c2_execution_checkpoint.js",
+          "scripts/rag/run_s2_c3_eval_checkpoint.js",
+          "scripts/rag/run_s2_c4_release_checkpoint.js",
+          "scripts/rag/run_s2_eval_summary_schema_check.js",
+          "scripts/rag/run_s2_preflight.js",
+          "scripts/rag/run_s2_release_decision.js",
+          "scripts/rag/run_s2_release_governance_gate.js",
+          "scripts/rag/run_s2_route_classifier_train.js",
+          "scripts/rag/run_s2_route_share_ramp_experiment.js",
+          "scripts/rag/run_s2_workflow_invariant_check.js",
+          "scripts/rag/run_step3_production_population_pilot.js",
+          "scripts/rag/run_step_b_preflight.js",
+          "scripts/rag/run_supabase_migration_state.js",
+          "scripts/rag/run_telemetry_audit.js",
+          "scripts/rag/run_topic_path_mapping_backfill.js",
+          "scripts/syllabus/__tests__/9709-syllabus-gate.test.js",
+          "scripts/syllabus/freeze-9709-approved-baseline-v1.js",
+          "scripts/syllabus/generate-9709-canonical-topic-tree-draft-v1.js",
+          "scripts/syllabus/generate-9709-human-review-queue-v1.js",
+          "scripts/syllabus/lib/9709-syllabus-gate.js",
+          "scripts/syllabus/run_9709_syllabus_gate.js",
+          "scripts/workflow/__tests__/workflow-scripts.test.js",
+          "scripts/workflow/cli.js",
+          "scripts/workflow/lib/codex-preflight.js",
+          "scripts/workflow/lib/workflow-helper.js",
+          "src/components/learning-runtime/__tests__/compat-shell-retirements.test.js",
+          "src/contexts/__tests__/AuthContext.security.test.js",
+          "tests/ao/action-executor.test.js",
+          "tests/ao/ao-lifecycle-acceptance.test.js",
+          "tests/ao/ao-manage-cli.test.js",
+          "tests/ao/ao-observation-source.test.js",
+          "tests/ao/checkpoint-store.test.js",
+          "tests/ao/control-plane-assist-contract.test.js",
+          "tests/ao/control-plane-closeout-contract.test.js",
+          "tests/ao/control-plane-continuity-contract.test.js",
+          "tests/ao/control-plane-phase6-contract.test.js",
+          "tests/ao/controller-loop.test.js",
+          "tests/ao/controller-policy-gating.test.js",
+          "tests/ao/controller-shadow-parity.test.js",
+          "tests/ao/entry-topology-contract.test.js",
+          "tests/ao/eval-harness.test.js",
+          "tests/ao/event-ingest.test.js",
+          "tests/ao/handoff-protocol.test.js",
+          "tests/ao/issue-intake.test.js",
+          "tests/ao/manage-runner.test.js",
+          "tests/ao/orchestrator-decision-matrix-contract.test.js",
+          "tests/ao/override-runner.test.js",
+          "tests/ao/repo-knowledge.test.js",
+          "tests/ao/review-protocol.test.js",
+          "tests/ao/roadmap-completion-contract.test.js",
+          "tests/ao/runtime-preflight.test.js",
+          "tests/ao/scorecard.test.js",
+          "tests/ao/state-migrations.test.js",
+          "tests/ao/state-repository.test.js",
+          "tests/ao/state-runner.test.js",
+          "tests/community-retirement.test.js",
+          "tests/contracts/9709-boundary-annotations-draft.test.js",
+          "tests/contracts/9709-canonical-topic-tree-draft.test.js",
+          "tests/contracts/9709-freeze-approval-semantics.test.js",
+          "tests/contracts/9709-human-review-queue.test.js",
+          "tests/contracts/9709-rejected-baseline-quarantine.test.js",
+          "tests/contracts/9709-review-items-v1.test.js",
+          "tests/contracts/9709-syllabus-topic-tree-schema.test.js",
+          "tests/frontend-dead-code-retirements.test.js",
+          "tests/legacy-api-node-retirement.test.js",
+          "tests/marking/__tests__/ft-cao-fixtures-contract.test.js",
+          "tests/playwright/windows-side-runner.test.js"
+        ]
+      },
+      {
+        "pkg": "node:fs",
+        "fileCount": 272,
+        "files": [
+          "api/__tests__/api-route-integration.test.js",
+          "api/_runtime/__tests__/route-registry-retirements.test.js",
+          "api/learning/__tests__/mastery-orchestrator.test.js",
+          "api/learning/__tests__/p3-rubric-validator.test.js",
+          "api/learning/__tests__/question-intelligence-service.test.js",
+          "api/learning/lib/contracts/released-family-gate.js",
+          "api/learning/lib/marking/contracts/p3-rubric-validator.js",
+          "api/marking/__tests__/decision-engine-v1-ft-cao.test.js",
+          "api/marking/lib/marking-semantics-v1.js",
+          "api/marking/lib/rubric-resolver-v1.js",
+          "api/rag/__tests__/ask-service.test.js",
+          "api/rag/__tests__/marking-isolation.test.js",
+          "api/rag/__tests__/retirements.test.js",
+          "api/rag/__tests__/telemetry-recorder.test.js",
+          "api/rag/lib/ask-service.js",
+          "api/rag/lib/config.js",
+          "api/rag/lib/s2-local-classifier.js",
+          "api/rag/lib/telemetry-jsonl-sink.js",
+          "api/recommendations/__tests__/productionization.test.js",
+          "scripts/ao-manage.js",
+          "scripts/ao-review.js",
+          "scripts/ao/lib/debt-report.js",
+          "scripts/ao/lib/doctor-local-state-source.js",
+          "scripts/ao/lib/eval-harness.js",
+          "scripts/ao/lib/fixture-support.js",
+          "scripts/ao/lib/repo-knowledge.js",
+          "scripts/ao/lib/repo-root.js",
+          "scripts/ao/lib/runtime-preflight.js",
+          "scripts/ao/lib/scorecard.js",
+          "scripts/ao/lib/state-runner.js",
+          "scripts/ao/lib/state-storage.js",
+          "scripts/evaluation/run_question_search_gate.js",
+          "scripts/git-hooks/guardrails.js",
+          "scripts/learning/__tests__/9231-report-artifact-hygiene.test.js",
+          "scripts/learning/__tests__/9702-physics-authority-contract.test.js",
+          "scripts/learning/__tests__/9709-diagram-human-review.test.js",
+          "scripts/learning/__tests__/9709-release-preflight.test.js",
+          "scripts/learning/__tests__/9709-surface-triage-rerun.test.js",
+          "scripts/learning/__tests__/build-9231-authority-alignment-wave1.test.js",
+          "scripts/learning/__tests__/build-9231-evidence-layers-wave1-gate.test.js",
+          "scripts/learning/__tests__/build-9231-next-wave-candidate-gate.test.js",
+          "scripts/learning/__tests__/build-9231-production-ready-wave1-gate.test.js",
+          "scripts/learning/__tests__/build-9231-question-plain-text-v1.test.js",
+          "scripts/learning/__tests__/build-9231-question-shard-split.test.js",
+          "scripts/learning/__tests__/build-9231-question-text-foundation-inventory.test.js",
+          "scripts/learning/__tests__/build-9231-visual-review-wave1-gate.test.js",
+          "scripts/learning/__tests__/build-9231-wm-final-evidence-layers-gate.test.js",
+          "scripts/learning/__tests__/build-9231-wm-final-visual-review-gate.test.js",
+          "scripts/learning/__tests__/build-9231-wm-source-freeze-gate.test.js",
+          "scripts/learning/__tests__/build-9231-wm-source-remediation-gate.test.js",
+          "scripts/learning/__tests__/build-9702-authority-alignment.test.js",
+          "scripts/learning/__tests__/build-9702-evidence-layers-gate.test.js",
+          "scripts/learning/__tests__/build-9702-question-plain-text-v1.test.js",
+          "scripts/learning/__tests__/build-9702-source-truth-inventory.test.js",
+          "scripts/learning/__tests__/build-9709-question-plain-text-v1.test.js",
+          "scripts/learning/__tests__/build-9709-question-plain-text-v2.test.js",
+          "scripts/learning/__tests__/closed-loop-release-gate.test.js",
+          "scripts/learning/__tests__/event-pipeline-gate.test.js",
+          "scripts/learning/__tests__/question-plain-text-v2-consumption.test.js",
+          "scripts/learning/__tests__/released-family-gate.test.js",
+          "scripts/learning/__tests__/run-9231-question-plain-text-v2-consumption-gate.test.js",
+          "scripts/learning/__tests__/run-9702-question-plain-text-v2-consumption-gate.test.js",
+          "scripts/learning/__tests__/run-9709-authority-ready-batch.test.js",
+          "scripts/learning/__tests__/run-9709-release-preflight.test.js",
+          "scripts/learning/__tests__/run-paper-question-registry-backfill.test.js",
+          "scripts/learning/__tests__/run-question-evidence-bundle-v1.test.js",
+          "scripts/learning/build_9231_authority_alignment_wave1.js",
+          "scripts/learning/build_9231_evidence_layers_wave1_gate.js",
+          "scripts/learning/build_9231_next_wave_candidate_gate.js",
+          "scripts/learning/build_9231_production_ready_wave1_gate.js",
+          "scripts/learning/build_9231_question_plain_text_v1.js",
+          "scripts/learning/build_9231_question_row_foundation.js",
+          "scripts/learning/build_9231_question_shard_split.js",
+          "scripts/learning/build_9231_question_text_foundation_inventory.js",
+          "scripts/learning/build_9231_visual_review_wave1_gate.js",
+          "scripts/learning/build_9231_wm_final_evidence_layers_gate.js",
+          "scripts/learning/build_9231_wm_final_visual_review_gate.js",
+          "scripts/learning/build_9231_wm_source_freeze_gate.js",
+          "scripts/learning/build_9231_wm_source_remediation_gate.js",
+          "scripts/learning/build_9702_authority_alignment.js",
+          "scripts/learning/build_9702_evidence_layers_gate.js",
+          "scripts/learning/build_9702_question_plain_text_v1.js",
+          "scripts/learning/build_9702_source_truth_inventory.js",
+          "scripts/learning/build_9709_question_plain_text_v1.js",
+          "scripts/learning/build_9709_question_plain_text_v2.js",
+          "scripts/learning/lib/9709-diagram-human-review.js",
+          "scripts/learning/lib/browser-closed-loop-fixture.js",
+          "scripts/learning/lib/closed-loop-release-gate.js",
+          "scripts/learning/lib/event-pipeline-gate.js",
+          "scripts/learning/lib/question-evidence-bundle-v1.js",
+          "scripts/learning/lib/question-plain-text-v2-consumption.js",
+          "scripts/learning/lib/wave-a-manifest.js",
+          "scripts/learning/lib/windows-host-node-path.js",
+          "scripts/learning/run_9231_full_production_ready_aggregate_gate.js",
+          "scripts/learning/run_9231_wave4_production_ready_gate.js",
+          "scripts/learning/run_9702_full_production_ready_aggregate_gate.js",
+          "scripts/learning/run_9702_production_ready_gate.js",
+          "scripts/learning/run_9709_authority_ready_batch.js",
+          "scripts/learning/run_9709_diagram_review_server.js",
+          "scripts/learning/run_9709_full_production_ready_aggregate_gate.js",
+          "scripts/learning/run_9709_new_paper_v2_production_ready_aggregate_gate.js",
+          "scripts/learning/run_9709_release_preflight.js",
+          "scripts/learning/run_9709_surface_triage_rerun.js",
+          "scripts/learning/run_9709_wave1_search_closure.js",
+          "scripts/learning/run_paper_question_registry_backfill.js",
+          "scripts/learning/run_question_analysis_backfill.js",
+          "scripts/learning/run_question_evidence_bundle_v1.js",
+          "scripts/learning/run_wave_a_projection_audit.js",
+          "scripts/learning/run_wave_a_shard_reset.js",
+          "scripts/marking/run_js_decision_fixture_v1.js",
+          "scripts/phase1/run_evaluate_v1_smoke.js",
+          "scripts/phase2/generate_route_matrix.js",
+          "scripts/phase2/migrate_supabase_to_factory.js",
+          "scripts/phase2/preflight_backend_baseline.js",
+          "scripts/phase2/run_api_route_integration_summary.js",
+          "scripts/phase2/run_evidence_ledger_regression.js",
+          "scripts/phase2/run_security_baseline_report.js",
+          "scripts/phase2/scan_security_redaction.js",
+          "scripts/phase3/run_error_book_contract_gate.js",
+          "scripts/phase3/run_post_rag_s1_preflight.js",
+          "scripts/phase3/run_recommendations_production_gate.js",
+          "scripts/phase3/run_security_depth_gate.js",
+          "scripts/phase3/run_shared_rate_limit_gate.js",
+          "scripts/rag/__tests__/boundary-db-guardrail-config.test.js",
+          "scripts/rag/__tests__/build-step3-retrieval-availability-sample.test.js",
+          "scripts/rag/__tests__/evidence-draft-review.test.js",
+          "scripts/rag/__tests__/production-evidence-first-online-rollout-verification.test.js",
+          "scripts/rag/__tests__/production-evidence-ingest-preflight.test.js",
+          "scripts/rag/__tests__/production-evidence-ingest.test.js",
+          "scripts/rag/__tests__/production-evidence-manifest.test.js",
+          "scripts/rag/__tests__/production-evidence-promotion-bridge.test.js",
+          "scripts/rag/__tests__/production-evidence-ready-ingest-contract.test.js",
+          "scripts/rag/__tests__/production-evidence-release-gate.test.js",
+          "scripts/rag/__tests__/production-evidence-rollout-gate.test.js",
+          "scripts/rag/__tests__/production-evidence-rollout-status.test.js",
+          "scripts/rag/__tests__/production-evidence-whitelist.test.js",
+          "scripts/rag/__tests__/run-evidence-draft-promotion-candidate.test.js",
+          "scripts/rag/__tests__/run-evidence-draft-review-scaffold.test.js",
+          "scripts/rag/__tests__/run-production-evidence-first-online-rollout-verification.test.js",
+          "scripts/rag/__tests__/run-production-evidence-promotion-bridge.test.js",
+          "scripts/rag/__tests__/run-production-evidence-rollout-status.test.js",
+          "scripts/rag/__tests__/run-telemetry-audit.test.js",
+          "scripts/rag/__tests__/s1-contract-gate-workflow.test.js",
+          "scripts/rag/__tests__/s1-metric-gate-workflow.test.js",
+          "scripts/rag/__tests__/s1_2_dataset.test.js",
+          "scripts/rag/__tests__/s2-eval-summary-schema.test.js",
+          "scripts/rag/__tests__/s2-release-governance-gate.test.js",
+          "scripts/rag/__tests__/s2-workflow-invariant.test.js",
+          "scripts/rag/build_live_benchmark_set.js",
+          "scripts/rag/build_restricted_official_batch_plan.js",
+          "scripts/rag/build_s1_1_broader_qa_set.js",
+          "scripts/rag/build_s1_2_syllabus_qa_core_set.js",
+          "scripts/rag/build_s1_3_forced_retrieval_set.js",
+          "scripts/rag/build_s2_augmentation_eval_set.js",
+          "scripts/rag/build_s2_readiness_profile.js",
+          "scripts/rag/build_step3_retrieval_availability_sample.js",
+          "scripts/rag/lib/evidence-draft-promotion-candidate.js",
+          "scripts/rag/lib/evidence-draft-review.js",
+          "scripts/rag/lib/production-evidence-bundle.js",
+          "scripts/rag/lib/production-evidence-promotion-bridge.js",
+          "scripts/rag/lib/production-source-inventory.js",
+          "scripts/rag/lib/s2_eval_summary_schema_check.js",
+          "scripts/rag/lib/telemetry_audit.js",
+          "scripts/rag/run_boundary_contract_summary.js",
+          "scripts/rag/run_canonical_chunk_contract.js",
+          "scripts/rag/run_canonical_schema_compat_smoke.js",
+          "scripts/rag/run_corpus_audit.js",
+          "scripts/rag/run_corpus_source_coverage.js",
+          "scripts/rag/run_curriculum_nodes_quality_audit.js",
+          "scripts/rag/run_db_push_dry_run_plan.js",
+          "scripts/rag/run_live_benchmark.js",
+          "scripts/rag/run_live_stability_summary.js",
+          "scripts/rag/run_marking_isolation_summary.js",
+          "scripts/rag/run_migration_execution_matrix.js",
+          "scripts/rag/run_pdf_ingest_probe.js",
+          "scripts/rag/run_production_evidence_first_online_rollout_verification.js",
+          "scripts/rag/run_production_evidence_governance_preflight.js",
+          "scripts/rag/run_production_evidence_governance_status.js",
+          "scripts/rag/run_production_evidence_ingest.js",
+          "scripts/rag/run_production_evidence_ingest_preflight.js",
+          "scripts/rag/run_production_evidence_manifest_check.js",
+          "scripts/rag/run_production_evidence_post_write_audit.js",
+          "scripts/rag/run_production_evidence_release_gate.js",
+          "scripts/rag/run_production_evidence_rollout_gate.js",
+          "scripts/rag/run_production_evidence_rollout_status.js",
+          "scripts/rag/run_production_evidence_whitelist_check.js",
+          "scripts/rag/run_production_source_inventory.js",
+          "scripts/rag/run_s1_1_benchmark.js",
+          "scripts/rag/run_s1_2_benchmark.js",
+          "scripts/rag/run_s1_2_decision.js",
+          "scripts/rag/run_s1_2_preflight.js",
+          "scripts/rag/run_s1_3_forced_retrieval_benchmark.js",
+          "scripts/rag/run_s1_3_preflight.js",
+          "scripts/rag/run_s1_3_production_source_posture.js",
+          "scripts/rag/run_s1_3_regression_gate.js",
+          "scripts/rag/run_s1_3_s2_go_no_go_decision.js",
+          "scripts/rag/run_s1_contract_gate.js",
+          "scripts/rag/run_s1_metric_gate.js",
+          "scripts/rag/run_s1_metric_gate_summary.js",
+          "scripts/rag/run_s1_preflight.js",
+          "scripts/rag/run_s2_advisory_gate.js",
+          "scripts/rag/run_s2_augmentation_eval.js",
+          "scripts/rag/run_s2_c1_classifier_gate.js",
+          "scripts/rag/run_s2_c2_execution_checkpoint.js",
+          "scripts/rag/run_s2_c3_eval_checkpoint.js",
+          "scripts/rag/run_s2_c4_release_checkpoint.js",
+          "scripts/rag/run_s2_eval_summary_schema_check.js",
+          "scripts/rag/run_s2_preflight.js",
+          "scripts/rag/run_s2_release_decision.js",
+          "scripts/rag/run_s2_release_governance_gate.js",
+          "scripts/rag/run_s2_route_classifier_train.js",
+          "scripts/rag/run_s2_route_share_ramp_experiment.js",
+          "scripts/rag/run_s2_workflow_invariant_check.js",
+          "scripts/rag/run_step3_production_population_pilot.js",
+          "scripts/rag/run_step_b_preflight.js",
+          "scripts/rag/run_supabase_migration_state.js",
+          "scripts/rag/run_telemetry_audit.js",
+          "scripts/rag/run_topic_path_mapping_backfill.js",
+          "scripts/syllabus/__tests__/9709-syllabus-gate.test.js",
+          "scripts/syllabus/freeze-9709-approved-baseline-v1.js",
+          "scripts/syllabus/generate-9709-canonical-topic-tree-draft-v1.js",
+          "scripts/syllabus/generate-9709-human-review-queue-v1.js",
+          "scripts/syllabus/lib/9709-syllabus-gate.js",
+          "scripts/workflow/__tests__/workflow-scripts.test.js",
+          "scripts/workflow/cli.js",
+          "scripts/workflow/lib/codex-preflight.js",
+          "src/api/__tests__/learningRuntimeApi.test.js",
+          "src/components/learning-runtime/__tests__/compat-shell-retirements.test.js",
+          "src/components/learning-runtime/__tests__/paper-workspace-contract-fixtures.test.js",
+          "src/components/learning-runtime/__tests__/paper-workspace-frontend-smoke.test.js",
+          "src/components/learning-runtime/__tests__/paper-workspace-view-model-adapters.test.js",
+          "src/components/learning-runtime/__tests__/workspace-contract-boundary.test.js",
+          "src/contexts/__tests__/AuthContext.security.test.js",
+          "src/styles/__tests__/readme-jekyll-escaping.test.js",
+          "tests/ao/action-executor.test.js",
+          "tests/ao/ao-lifecycle-acceptance.test.js",
+          "tests/ao/ao-manage-cli.test.js",
+          "tests/ao/ao-reconcile-cli.test.js",
+          "tests/ao/checkpoint-store.test.js",
+          "tests/ao/control-plane-assist-contract.test.js",
+          "tests/ao/control-plane-closeout-contract.test.js",
+          "tests/ao/control-plane-continuity-contract.test.js",
+          "tests/ao/control-plane-phase6-contract.test.js",
+          "tests/ao/controller-loop.test.js",
+          "tests/ao/controller-policy-gating.test.js",
+          "tests/ao/controller-shadow-parity.test.js",
+          "tests/ao/entry-topology-contract.test.js",
+          "tests/ao/event-ingest.test.js",
+          "tests/ao/handoff-protocol.test.js",
+          "tests/ao/issue-intake.test.js",
+          "tests/ao/manage-runner.test.js",
+          "tests/ao/orchestrator-decision-matrix-contract.test.js",
+          "tests/ao/override-runner.test.js",
+          "tests/ao/repo-knowledge.test.js",
+          "tests/ao/review-protocol.test.js",
+          "tests/ao/roadmap-completion-contract.test.js",
+          "tests/ao/runtime-preflight.test.js",
+          "tests/ao/scorecard.test.js",
+          "tests/ao/state-migrations.test.js",
+          "tests/ao/state-repository.test.js",
+          "tests/ao/state-runner.test.js",
+          "tests/community-retirement.test.js",
+          "tests/contracts/9709-boundary-annotations-draft.test.js",
+          "tests/contracts/9709-canonical-topic-tree-draft.test.js",
+          "tests/contracts/9709-freeze-approval-semantics.test.js",
+          "tests/contracts/9709-human-review-queue.test.js",
+          "tests/contracts/9709-rejected-baseline-quarantine.test.js",
+          "tests/contracts/9709-review-items-v1.test.js",
+          "tests/contracts/9709-syllabus-topic-tree-schema.test.js",
+          "tests/frontend-dead-code-retirements.test.js",
+          "tests/legacy-api-node-retirement.test.js",
+          "tests/marking/__tests__/ft-cao-fixtures-contract.test.js"
+        ]
+      },
+      {
+        "pkg": "@jest/globals",
+        "fileCount": 130,
+        "files": [
+          "api/__tests__/shared-rate-limit.test.js",
+          "api/auth/__tests__/productionization.test.js",
+          "api/error-book/__tests__/error-book-api.test.js",
+          "api/error-book/error-book.test.js",
+          "api/learning/__tests__/artifact-api.test.js",
+          "api/learning/__tests__/event-service.test.js",
+          "api/learning/__tests__/learning-effect-engine.test.js",
+          "api/learning/__tests__/mastery-orchestrator.test.js",
+          "api/learning/__tests__/question-import-service.test.js",
+          "api/learning/__tests__/question-search-api.test.js",
+          "api/learning/__tests__/question-search-service.test.js",
+          "api/learning/__tests__/review-task-api.test.js",
+          "api/learning/__tests__/session-api.test.js",
+          "api/learning/__tests__/session-ask.test.js",
+          "api/learning/__tests__/workspace-read-service.test.js",
+          "api/lib/security/__tests__/auth-context.test.js",
+          "api/lib/supabase/__tests__/pg-compat-client.test.js",
+          "api/marking/__tests__/evaluate-v1.test.js",
+          "api/marking/__tests__/rubric-resolver-v1.test.js",
+          "api/rag/__tests__/ask-service.test.js",
+          "api/rag/__tests__/ask-telemetry.test.js",
+          "api/rag/__tests__/embedding-client.test.js",
+          "api/rag/__tests__/search-telemetry.test.js",
+          "api/rag/__tests__/telemetry-recorder.test.js",
+          "api/recommendations/__tests__/productionization.test.js",
+          "scripts/evaluation/__tests__/question-search-gate.test.js",
+          "scripts/rag/__tests__/production-evidence-ingest.test.js",
+          "src/api/__tests__/learningRuntimeApi.test.js",
+          "src/api/__tests__/ragApi.test.js",
+          "src/components/learning-runtime/__tests__/ImportedQuestionIntake.test.js",
+          "src/components/learning-runtime/__tests__/ReviewTaskActionBar.test.js",
+          "src/components/learning-runtime/__tests__/SessionAskComposer.test.js",
+          "src/components/learning-runtime/__tests__/SessionLauncher.test.js",
+          "src/components/learning-runtime/__tests__/WorkspaceShell.test.js",
+          "src/components/learning-runtime/__tests__/paper-workspace-frontend-smoke.test.js",
+          "src/services/__tests__/errorBookService.test.js",
+          "src/styles/__tests__/readme-jekyll-escaping.test.js",
+          "src/utils/__tests__/supabase.test.js",
+          "tests/aggregation/mastery-aggregation.pbt.test.js",
+          "tests/aggregation/mastery-aggregation.test.js",
+          "tests/ao/action-executor.test.js",
+          "tests/ao/ao-controller-cli.test.js",
+          "tests/ao/ao-doctor-cli.test.js",
+          "tests/ao/ao-eval-cli.test.js",
+          "tests/ao/ao-handoff-cli.test.js",
+          "tests/ao/ao-lifecycle-acceptance.test.js",
+          "tests/ao/ao-lifecycle-cli.test.js",
+          "tests/ao/ao-manage-cli.test.js",
+          "tests/ao/ao-metrics-cli.test.js",
+          "tests/ao/ao-observation-source.test.js",
+          "tests/ao/ao-override-cli.test.js",
+          "tests/ao/ao-reconcile-cli.test.js",
+          "tests/ao/ao-review-cli.test.js",
+          "tests/ao/ao-state-cli.test.js",
+          "tests/ao/blocked-notification-transport.test.js",
+          "tests/ao/checkpoint-store.test.js",
+          "tests/ao/continuity-contracts.test.js",
+          "tests/ao/continuity.test.js",
+          "tests/ao/control-plane-assist-contract.test.js",
+          "tests/ao/control-plane-closeout-contract.test.js",
+          "tests/ao/control-plane-continuity-contract.test.js",
+          "tests/ao/control-plane-phase6-contract.test.js",
+          "tests/ao/controller-loop.test.js",
+          "tests/ao/controller-policy-gating.test.js",
+          "tests/ao/controller-shadow-parity.test.js",
+          "tests/ao/controller-state-contracts.test.js",
+          "tests/ao/decision-chain-contracts.test.js",
+          "tests/ao/decision-chain.test.js",
+          "tests/ao/doctor-contracts.test.js",
+          "tests/ao/doctor-engine.test.js",
+          "tests/ao/doctor-local-state-source.test.js",
+          "tests/ao/doctor-report.test.js",
+          "tests/ao/doctor-runner.test.js",
+          "tests/ao/entry-topology-contract.test.js",
+          "tests/ao/eval-harness.test.js",
+          "tests/ao/event-ingest.test.js",
+          "tests/ao/gate-model.test.js",
+          "tests/ao/github-observation-source.test.js",
+          "tests/ao/handoff-protocol.test.js",
+          "tests/ao/issue-intake.test.js",
+          "tests/ao/lifecycle-contracts.test.js",
+          "tests/ao/lifecycle-engine.test.js",
+          "tests/ao/lifecycle-report.test.js",
+          "tests/ao/manage-runner.test.js",
+          "tests/ao/measurement-taxonomy.test.js",
+          "tests/ao/orchestrator-decision-matrix-contract.test.js",
+          "tests/ao/override-runner.test.js",
+          "tests/ao/policy-engine.test.js",
+          "tests/ao/reconciliation-contracts.test.js",
+          "tests/ao/reconciliation-engine.test.js",
+          "tests/ao/reconciliation-report.test.js",
+          "tests/ao/reconciliation-runner.test.js",
+          "tests/ao/repo-knowledge-lint.test.js",
+          "tests/ao/repo-knowledge.test.js",
+          "tests/ao/review-contracts.test.js",
+          "tests/ao/review-protocol.test.js",
+          "tests/ao/roadmap-completion-contract.test.js",
+          "tests/ao/runtime-contracts.test.js",
+          "tests/ao/runtime-preflight.test.js",
+          "tests/ao/scorecard.test.js",
+          "tests/ao/state-contracts.test.js",
+          "tests/ao/state-migrations.test.js",
+          "tests/ao/state-report.test.js",
+          "tests/ao/state-repository.test.js",
+          "tests/ao/state-runner.test.js",
+          "tests/ao/state-storage.test.js",
+          "tests/ao/task-spec.test.js",
+          "tests/ao/transition-engine.test.js",
+          "tests/error-book/error-book-contract.test.js",
+          "tests/evidence-ledger/aggregation.pbt.test.js",
+          "tests/evidence-ledger/aggregation.test.js",
+          "tests/evidence-ledger/attempt-repository.pbt.test.js",
+          "tests/evidence-ledger/attempt-repository.test.js",
+          "tests/evidence-ledger/auth-helper.test.js",
+          "tests/evidence-ledger/backfill.pbt.test.js",
+          "tests/evidence-ledger/backfill.test.js",
+          "tests/evidence-ledger/context-query.pbt.test.js",
+          "tests/evidence-ledger/context-query.test.js",
+          "tests/evidence-ledger/decision-writer.pbt.test.js",
+          "tests/evidence-ledger/decision-writer.test.js",
+          "tests/evidence-ledger/error-event-writer.pbt.test.js",
+          "tests/evidence-ledger/error-event-writer.test.js",
+          "tests/evidence-ledger/evaluate-v1-integration.test.js",
+          "tests/evidence-ledger/ledger-orchestrator.pbt.test.js",
+          "tests/evidence-ledger/ledger-orchestrator.test.js",
+          "tests/evidence-ledger/mark-run-repository.pbt.test.js",
+          "tests/evidence-ledger/mark-run-repository.test.js",
+          "tests/evidence/context-contract.test.js",
+          "tests/evidence/verify-context-sla.test.js",
+          "tests/playwright/windows-side-runner.test.js"
+        ]
+      },
+      {
+        "pkg": "node:url",
+        "fileCount": 107,
+        "files": [
+          "api/learning/lib/contracts/released-family-gate.js",
+          "api/learning/lib/marking/contracts/p3-rubric-validator.js",
+          "api/marking/lib/marking-semantics-v1.js",
+          "api/marking/lib/rubric-resolver-v1.js",
+          "scripts/ao-controller.js",
+          "scripts/ao-doctor.js",
+          "scripts/ao-eval.js",
+          "scripts/ao-handoff.js",
+          "scripts/ao-knowledge.js",
+          "scripts/ao-lifecycle.js",
+          "scripts/ao-manage.js",
+          "scripts/ao-metrics.js",
+          "scripts/ao-override.js",
+          "scripts/ao-reconcile.js",
+          "scripts/ao-review.js",
+          "scripts/ao-state.js",
+          "scripts/ao/run-operator-smoke.js",
+          "scripts/evaluation/run_question_search_gate.js",
+          "scripts/evidence/verify-context-sla.js",
+          "scripts/learning/__tests__/9231-report-artifact-hygiene.test.js",
+          "scripts/learning/__tests__/run-9709-wave1-search-closure.test.js",
+          "scripts/learning/__tests__/run-paper-question-registry-backfill.test.js",
+          "scripts/learning/__tests__/run-question-analysis-backfill.test.js",
+          "scripts/learning/__tests__/run-question-evidence-bundle-v1.test.js",
+          "scripts/learning/__tests__/run-wave-a-projection-audit.test.js",
+          "scripts/learning/__tests__/run-wave-a-shard-reset.test.js",
+          "scripts/learning/build_9231_authority_alignment_wave1.js",
+          "scripts/learning/build_9231_evidence_layers_wave1_gate.js",
+          "scripts/learning/build_9231_next_wave_candidate_gate.js",
+          "scripts/learning/build_9231_production_ready_wave1_gate.js",
+          "scripts/learning/build_9231_question_plain_text_v1.js",
+          "scripts/learning/build_9231_question_row_foundation.js",
+          "scripts/learning/build_9231_question_shard_split.js",
+          "scripts/learning/build_9231_question_text_foundation_inventory.js",
+          "scripts/learning/build_9231_visual_review_wave1_gate.js",
+          "scripts/learning/build_9231_wm_final_evidence_layers_gate.js",
+          "scripts/learning/build_9231_wm_final_visual_review_gate.js",
+          "scripts/learning/build_9231_wm_source_freeze_gate.js",
+          "scripts/learning/build_9231_wm_source_remediation_gate.js",
+          "scripts/learning/build_9702_authority_alignment.js",
+          "scripts/learning/build_9702_evidence_layers_gate.js",
+          "scripts/learning/build_9702_question_plain_text_v1.js",
+          "scripts/learning/build_9702_source_truth_inventory.js",
+          "scripts/learning/build_9709_question_plain_text_v1.js",
+          "scripts/learning/build_9709_question_plain_text_v2.js",
+          "scripts/learning/lib/browser-closed-loop-fixture.js",
+          "scripts/learning/lib/closed-loop-release-gate.js",
+          "scripts/learning/lib/event-pipeline-gate.js",
+          "scripts/learning/lib/question-evidence-bundle-v1.js",
+          "scripts/learning/lib/windows-host-node-path.js",
+          "scripts/learning/run_9231_full_production_ready_aggregate_gate.js",
+          "scripts/learning/run_9231_question_plain_text_v2_consumption_gate.js",
+          "scripts/learning/run_9231_wave4_production_ready_gate.js",
+          "scripts/learning/run_9702_full_production_ready_aggregate_gate.js",
+          "scripts/learning/run_9702_production_ready_gate.js",
+          "scripts/learning/run_9702_question_plain_text_v2_consumption_gate.js",
+          "scripts/learning/run_9709_authority_ready_batch.js",
+          "scripts/learning/run_9709_diagram_review_server.js",
+          "scripts/learning/run_9709_full_production_ready_aggregate_gate.js",
+          "scripts/learning/run_9709_new_paper_v2_production_ready_aggregate_gate.js",
+          "scripts/learning/run_9709_question_plain_text_v2_consumption_gate.js",
+          "scripts/learning/run_9709_release_preflight.js",
+          "scripts/learning/run_9709_wave1_search_closure.js",
+          "scripts/learning/run_closed_loop_release_gate.js",
+          "scripts/learning/run_event_pipeline_gate.js",
+          "scripts/learning/run_paper_question_registry_backfill.js",
+          "scripts/learning/run_question_analysis_backfill.js",
+          "scripts/learning/run_question_evidence_bundle_v1.js",
+          "scripts/learning/run_released_family_gate.js",
+          "scripts/learning/run_wave_a_projection_audit.js",
+          "scripts/learning/run_wave_a_shard_reset.js",
+          "scripts/learning/seed_browser_closed_loop_fixture.js",
+          "scripts/rag/build_restricted_official_batch_plan.js",
+          "scripts/rag/build_s2_augmentation_eval_set.js",
+          "scripts/rag/build_s2_readiness_profile.js",
+          "scripts/rag/build_step3_retrieval_availability_sample.js",
+          "scripts/rag/run_evidence_draft_promotion_candidate.js",
+          "scripts/rag/run_evidence_draft_review_scaffold.js",
+          "scripts/rag/run_production_evidence_first_online_rollout_verification.js",
+          "scripts/rag/run_production_evidence_governance_preflight.js",
+          "scripts/rag/run_production_evidence_governance_status.js",
+          "scripts/rag/run_production_evidence_ingest.js",
+          "scripts/rag/run_production_evidence_ingest_preflight.js",
+          "scripts/rag/run_production_evidence_manifest_check.js",
+          "scripts/rag/run_production_evidence_post_write_audit.js",
+          "scripts/rag/run_production_evidence_promotion_bridge.js",
+          "scripts/rag/run_production_evidence_release_gate.js",
+          "scripts/rag/run_production_evidence_rollout_gate.js",
+          "scripts/rag/run_production_evidence_rollout_status.js",
+          "scripts/rag/run_production_evidence_whitelist_check.js",
+          "scripts/rag/run_production_source_inventory.js",
+          "scripts/rag/run_s2_c1_classifier_gate.js",
+          "scripts/rag/run_s2_c2_execution_checkpoint.js",
+          "scripts/rag/run_s2_eval_summary_schema_check.js",
+          "scripts/rag/run_s2_workflow_invariant_check.js",
+          "scripts/rag/run_step3_production_population_pilot.js",
+          "scripts/rag/run_telemetry_audit.js",
+          "scripts/syllabus/freeze-9709-approved-baseline-v1.js",
+          "scripts/syllabus/generate-9709-canonical-topic-tree-draft-v1.js",
+          "scripts/syllabus/generate-9709-human-review-queue-v1.js",
+          "scripts/syllabus/lib/9709-syllabus-gate.js",
+          "scripts/syllabus/run_9709_syllabus_gate.js",
+          "tests/ao/ao-lifecycle-acceptance.test.js",
+          "tests/ao/ao-observation-source.test.js",
+          "tests/ao/controller-shadow-parity.test.js",
+          "tests/ao/eval-harness.test.js",
+          "tests/ao/issue-intake.test.js"
+        ]
+      },
+      {
+        "pkg": "react",
+        "fileCount": 85,
+        "files": [
+          "src/App.jsx",
+          "src/components/AI/PersonalizedRecommendations.jsx",
+          "src/components/AnimatedKeywords.jsx",
+          "src/components/Auth/AuthModal.jsx",
+          "src/components/Auth/LoginForm.jsx",
+          "src/components/Auth/SignupForm.jsx",
+          "src/components/ChatPanel.jsx",
+          "src/components/ChatWidget.jsx",
+          "src/components/CoreFeatures.jsx",
+          "src/components/ErrorBookButton.jsx",
+          "src/components/ErrorBoundary.jsx",
+          "src/components/FiltersBar.jsx",
+          "src/components/Footer.jsx",
+          "src/components/Navbar.jsx",
+          "src/components/PWAInstallButton.jsx",
+          "src/components/Progress/ProgressTracker.jsx",
+          "src/components/ProgressBar.jsx",
+          "src/components/ProgressDemo.jsx",
+          "src/components/Recommendations/PersonalizedRecommendations.jsx",
+          "src/components/RecommendedTopics.jsx",
+          "src/components/SearchBox.jsx",
+          "src/components/SearchResultCard.jsx",
+          "src/components/SelectionListener.jsx",
+          "src/components/Settings/UserSettings.jsx",
+          "src/components/SuccessStories.jsx",
+          "src/components/ThemeToggle.jsx",
+          "src/components/TopicCard.jsx",
+          "src/components/learning-runtime/ArtifactInboxPanel.js",
+          "src/components/learning-runtime/ArtifactLifecycleActions.js",
+          "src/components/learning-runtime/ArtifactSupersedeSheet.js",
+          "src/components/learning-runtime/ImportPostureBanner.js",
+          "src/components/learning-runtime/ImportedQuestionIntake.js",
+          "src/components/learning-runtime/LearningSessionShell.js",
+          "src/components/learning-runtime/LinkedReferenceList.js",
+          "src/components/learning-runtime/ReviewQueuePanel.js",
+          "src/components/learning-runtime/ReviewTaskActionBar.js",
+          "src/components/learning-runtime/SessionAskComposer.js",
+          "src/components/learning-runtime/SessionHeader.js",
+          "src/components/learning-runtime/SessionLauncher.js",
+          "src/components/learning-runtime/SessionTimeline.js",
+          "src/components/learning-runtime/StableSlotPanel.js",
+          "src/components/learning-runtime/WorkspaceArtifactCard.js",
+          "src/components/learning-runtime/WorkspaceShell.js",
+          "src/components/learning-runtime/__tests__/ImportPostureBanner.test.js",
+          "src/components/learning-runtime/__tests__/ImportedQuestionIntake.test.js",
+          "src/components/learning-runtime/__tests__/LearningSessionShell.test.js",
+          "src/components/learning-runtime/__tests__/ReviewTaskActionBar.test.js",
+          "src/components/learning-runtime/__tests__/SessionAskComposer.test.js",
+          "src/components/learning-runtime/__tests__/SessionLauncher.test.js",
+          "src/components/learning-runtime/__tests__/WorkspaceArtifactCard.test.js",
+          "src/components/learning-runtime/__tests__/WorkspaceShell.test.js",
+          "src/components/ui/aurora-background.jsx",
+          "src/context/AIContext.jsx",
+          "src/contexts/AuthContext.jsx",
+          "src/contexts/ThemeContext.jsx",
+          "src/hooks/useChat.js",
+          "src/hooks/useLocalStorage.js",
+          "src/main.jsx",
+          "src/pages/AskAI.jsx",
+          "src/pages/FurtherMathematicsPapers.jsx",
+          "src/pages/FurtherMathematicsTopics.jsx",
+          "src/pages/Landing.jsx",
+          "src/pages/LearningPath.jsx",
+          "src/pages/MathematicsPapers.jsx",
+          "src/pages/MathematicsTopics.jsx",
+          "src/pages/NotFound.jsx",
+          "src/pages/PaperPage.jsx",
+          "src/pages/PhysicsA2Level.jsx",
+          "src/pages/PhysicsASLevel.jsx",
+          "src/pages/PhysicsPapers.jsx",
+          "src/pages/PhysicsTopicDetail.jsx",
+          "src/pages/PhysicsTopics.jsx",
+          "src/pages/Pricing.jsx",
+          "src/pages/Recommendations.jsx",
+          "src/pages/Search.jsx",
+          "src/pages/StudyHub.jsx",
+          "src/pages/SubjectPage.jsx",
+          "src/pages/SubjectSelection.jsx",
+          "src/pages/ToolsImageSolver.jsx",
+          "src/pages/ToolsProgressTracking.jsx",
+          "src/pages/ToolsSmartRecommendations.jsx",
+          "src/pages/ToolsStudySuggestions.jsx",
+          "src/pages/TopicDetail.jsx",
+          "src/pages/learning-runtime/ReviewQueuePage.jsx",
+          "src/pages/learning-runtime/TopicWorkspacePage.jsx"
+        ]
+      },
+      {
+        "pkg": "node:os",
+        "fileCount": 52,
+        "files": [
+          "api/rag/__tests__/telemetry-recorder.test.js",
+          "scripts/ao/lib/eval-harness.js",
+          "scripts/learning/__tests__/build-9231-authority-alignment-wave1.test.js",
+          "scripts/learning/__tests__/build-9231-evidence-layers-wave1-gate.test.js",
+          "scripts/learning/__tests__/build-9231-next-wave-candidate-gate.test.js",
+          "scripts/learning/__tests__/build-9231-production-ready-wave1-gate.test.js",
+          "scripts/learning/__tests__/build-9231-question-plain-text-v1.test.js",
+          "scripts/learning/__tests__/build-9231-question-shard-split.test.js",
+          "scripts/learning/__tests__/build-9231-question-text-foundation-inventory.test.js",
+          "scripts/learning/__tests__/build-9231-visual-review-wave1-gate.test.js",
+          "scripts/learning/__tests__/build-9231-wm-final-evidence-layers-gate.test.js",
+          "scripts/learning/__tests__/build-9231-wm-final-visual-review-gate.test.js",
+          "scripts/learning/__tests__/build-9231-wm-source-freeze-gate.test.js",
+          "scripts/learning/__tests__/build-9231-wm-source-remediation-gate.test.js",
+          "scripts/learning/__tests__/build-9702-authority-alignment.test.js",
+          "scripts/learning/__tests__/build-9702-evidence-layers-gate.test.js",
+          "scripts/learning/__tests__/build-9702-question-plain-text-v1.test.js",
+          "scripts/learning/__tests__/build-9702-source-truth-inventory.test.js",
+          "scripts/learning/__tests__/build-9709-question-plain-text-v1.test.js",
+          "scripts/learning/__tests__/build-9709-question-plain-text-v2.test.js",
+          "scripts/learning/__tests__/run-9231-question-plain-text-v2-consumption-gate.test.js",
+          "scripts/learning/__tests__/run-9702-question-plain-text-v2-consumption-gate.test.js",
+          "scripts/learning/__tests__/run-9709-authority-ready-batch.test.js",
+          "scripts/learning/__tests__/run-paper-question-registry-backfill.test.js",
+          "scripts/learning/run_9709_wave1_search_closure.js",
+          "scripts/rag/__tests__/build-step3-retrieval-availability-sample.test.js",
+          "scripts/rag/__tests__/evidence-draft-review.test.js",
+          "scripts/rag/__tests__/production-evidence-promotion-bridge.test.js",
+          "scripts/rag/__tests__/run-evidence-draft-promotion-candidate.test.js",
+          "scripts/rag/__tests__/run-evidence-draft-review-scaffold.test.js",
+          "scripts/rag/__tests__/run-production-evidence-first-online-rollout-verification.test.js",
+          "scripts/rag/__tests__/run-production-evidence-promotion-bridge.test.js",
+          "scripts/rag/__tests__/run-production-evidence-rollout-status.test.js",
+          "scripts/rag/__tests__/run-telemetry-audit.test.js",
+          "scripts/workflow/__tests__/workflow-scripts.test.js",
+          "tests/ao/action-executor.test.js",
+          "tests/ao/ao-manage-cli.test.js",
+          "tests/ao/checkpoint-store.test.js",
+          "tests/ao/controller-loop.test.js",
+          "tests/ao/controller-policy-gating.test.js",
+          "tests/ao/controller-shadow-parity.test.js",
+          "tests/ao/event-ingest.test.js",
+          "tests/ao/handoff-protocol.test.js",
+          "tests/ao/manage-runner.test.js",
+          "tests/ao/override-runner.test.js",
+          "tests/ao/repo-knowledge.test.js",
+          "tests/ao/review-protocol.test.js",
+          "tests/ao/runtime-preflight.test.js",
+          "tests/ao/scorecard.test.js",
+          "tests/ao/state-migrations.test.js",
+          "tests/ao/state-repository.test.js",
+          "tests/ao/state-runner.test.js"
+        ]
+      },
+      {
+        "pkg": "node:child_process",
+        "fileCount": 42,
+        "files": [
+          "scripts/ao/lib/action-executor.js",
+          "scripts/ao/lib/ao-observation-source.js",
+          "scripts/ao/lib/doctor-local-state-source.js",
+          "scripts/ao/lib/github-observation-source.js",
+          "scripts/ao/lib/runtime-preflight.js",
+          "scripts/evaluation/run_question_search_gate.js",
+          "scripts/git-hooks/guardrails.js",
+          "scripts/learning/__tests__/event-pipeline-gate.test.js",
+          "scripts/learning/__tests__/run-9709-wave1-search-closure.test.js",
+          "scripts/learning/__tests__/run-paper-question-registry-backfill.test.js",
+          "scripts/learning/__tests__/run-question-analysis-backfill.test.js",
+          "scripts/learning/__tests__/run-question-evidence-bundle-v1.test.js",
+          "scripts/learning/__tests__/run-wave-a-shard-reset.test.js",
+          "scripts/learning/build_9702_source_truth_inventory.js",
+          "scripts/learning/run_9231_full_production_ready_aggregate_gate.js",
+          "scripts/learning/run_9231_wave4_production_ready_gate.js",
+          "scripts/learning/run_9702_full_production_ready_aggregate_gate.js",
+          "scripts/learning/run_9702_production_ready_gate.js",
+          "scripts/learning/run_9709_authority_ready_batch.js",
+          "scripts/learning/run_9709_new_paper_v2_production_ready_aggregate_gate.js",
+          "scripts/learning/run_9709_wave1_search_closure.js",
+          "scripts/phase2/run_evidence_ledger_regression.js",
+          "scripts/phase3/run_error_book_contract_gate.js",
+          "scripts/phase3/run_recommendations_production_gate.js",
+          "scripts/phase3/run_shared_rate_limit_gate.js",
+          "scripts/rag/__tests__/build-step3-retrieval-availability-sample.test.js",
+          "scripts/rag/__tests__/run-production-evidence-first-online-rollout-verification.test.js",
+          "scripts/rag/__tests__/run-telemetry-audit.test.js",
+          "scripts/rag/run_boundary_contract_summary.js",
+          "scripts/rag/run_db_push_dry_run_plan.js",
+          "scripts/rag/run_pdf_ingest_probe.js",
+          "scripts/rag/run_s1_contract_gate.js",
+          "scripts/rag/run_s1_metric_gate.js",
+          "scripts/rag/run_s2_c1_classifier_gate.js",
+          "scripts/rag/run_s2_c2_execution_checkpoint.js",
+          "scripts/rag/run_s2_route_share_ramp_experiment.js",
+          "scripts/rag/run_step3_production_population_pilot.js",
+          "scripts/rag/run_step_b_preflight.js",
+          "scripts/rag/run_supabase_migration_state.js",
+          "scripts/workflow/__tests__/workflow-scripts.test.js",
+          "scripts/workflow/cli.js",
+          "scripts/workflow/lib/codex-preflight.js"
+        ]
+      },
+      {
+        "pkg": "framer-motion",
+        "fileCount": 37,
+        "files": [
+          "src/components/AI/PersonalizedRecommendations.jsx",
+          "src/components/AnimatedKeywords.jsx",
+          "src/components/Auth/AuthModal.jsx",
+          "src/components/Auth/LoginForm.jsx",
+          "src/components/Auth/SignupForm.jsx",
+          "src/components/ChatWidget.jsx",
+          "src/components/CoreFeatures.jsx",
+          "src/components/ErrorBookButton.jsx",
+          "src/components/Navbar.jsx",
+          "src/components/PWAInstallButton.jsx",
+          "src/components/Progress/ProgressTracker.jsx",
+          "src/components/ProgressBar.jsx",
+          "src/components/ProgressDemo.jsx",
+          "src/components/Recommendations/PersonalizedRecommendations.jsx",
+          "src/components/RecommendedTopics.jsx",
+          "src/components/SearchBox.jsx",
+          "src/components/Settings/UserSettings.jsx",
+          "src/components/SuccessStories.jsx",
+          "src/components/ThemeToggle.jsx",
+          "src/components/TopicCard.jsx",
+          "src/components/ui/multimodal-ai-chat-input.jsx",
+          "src/pages/AskAI.jsx",
+          "src/pages/FurtherMathematicsPapers.jsx",
+          "src/pages/FurtherMathematicsTopics.jsx",
+          "src/pages/Landing.jsx",
+          "src/pages/MathematicsPapers.jsx",
+          "src/pages/MathematicsTopics.jsx",
+          "src/pages/PaperPage.jsx",
+          "src/pages/PhysicsA2Level.jsx",
+          "src/pages/PhysicsASLevel.jsx",
+          "src/pages/PhysicsPapers.jsx",
+          "src/pages/PhysicsTopicDetail.jsx",
+          "src/pages/PhysicsTopics.jsx",
+          "src/pages/Pricing.jsx",
+          "src/pages/Recommendations.jsx",
+          "src/pages/SubjectSelection.jsx",
+          "src/pages/TopicDetail.jsx"
+        ]
+      },
+      {
+        "pkg": "node:crypto",
+        "fileCount": 34,
+        "files": [
+          "api/_runtime/request-adapter.js",
+          "api/auth/index.js",
+          "api/infra/queue/envelope.js",
+          "api/infra/queue/in-memory-adapter.js",
+          "api/infra/queue/redis-adapter.js",
+          "api/learning/lib/events/attempt-event-service.js",
+          "api/learning/lib/events/event-service.js",
+          "api/learning/lib/import/question-import-service.js",
+          "api/learning/lib/repositories/request-idempotency-repository.js",
+          "api/learning/lib/session-runtime/session-service.js",
+          "api/lib/security/auth-context.js",
+          "api/marking/evaluate-v1.js",
+          "api/middleware/auth.js",
+          "api/rag/lib/telemetry-schema.js",
+          "api/recommendations/lib/runtime.js",
+          "scripts/ao/lib/checkpoint-store.js",
+          "scripts/ao/lib/controller-loop.js",
+          "scripts/ao/lib/eval-harness.js",
+          "scripts/ao/lib/event-ingest.js",
+          "scripts/ao/lib/override-runner.js",
+          "scripts/ao/lib/repo-knowledge.js",
+          "scripts/ao/lib/run-metrics.js",
+          "scripts/ao/lib/runtime-contracts.js",
+          "scripts/ao/lib/scorecard.js",
+          "scripts/ao/lib/state-repository.js",
+          "scripts/learning/build_9231_wm_source_remediation_gate.js",
+          "scripts/learning/build_9702_source_truth_inventory.js",
+          "scripts/learning/lib/authority-alignment.js",
+          "scripts/learning/lib/question-analysis-backfill.js",
+          "scripts/learning/lib/question-plain-text-v2-consumption.js",
+          "scripts/learning/run_9231_wave4_production_ready_gate.js",
+          "scripts/learning/run_9702_production_ready_gate.js",
+          "scripts/syllabus/generate-9709-human-review-queue-v1.js",
+          "tests/evidence-ledger/evaluate-v1-integration.test.js"
+        ]
+      },
+      {
+        "pkg": "lucide-react",
+        "fileCount": 31,
+        "files": [
+          "src/components/Auth/AuthModal.jsx",
+          "src/components/Auth/LoginForm.jsx",
+          "src/components/Auth/SignupForm.jsx",
+          "src/components/ChatWidget.jsx",
+          "src/components/ErrorBookButton.jsx",
+          "src/components/PWAInstallButton.jsx",
+          "src/components/ProgressDemo.jsx",
+          "src/components/RecommendedTopics.jsx",
+          "src/components/SearchBox.jsx",
+          "src/components/SuccessStories.jsx",
+          "src/components/ThemeToggle.jsx",
+          "src/components/TopicCard.jsx",
+          "src/components/ui/multimodal-ai-chat-input.jsx",
+          "src/pages/AskAI.jsx",
+          "src/pages/FurtherMathematicsPapers.jsx",
+          "src/pages/FurtherMathematicsTopics.jsx",
+          "src/pages/Landing.jsx",
+          "src/pages/LearningPath.jsx",
+          "src/pages/MathematicsPapers.jsx",
+          "src/pages/MathematicsTopics.jsx",
+          "src/pages/PaperPage.jsx",
+          "src/pages/PhysicsA2Level.jsx",
+          "src/pages/PhysicsASLevel.jsx",
+          "src/pages/PhysicsPapers.jsx",
+          "src/pages/PhysicsTopics.jsx",
+          "src/pages/Pricing.jsx",
+          "src/pages/Recommendations.jsx",
+          "src/pages/SubjectSelection.jsx",
+          "src/pages/learning-runtime/LearningSessionPage.jsx",
+          "src/pages/learning-runtime/ReviewQueuePage.jsx",
+          "src/pages/learning-runtime/TopicWorkspacePage.jsx"
+        ]
+      },
+      {
+        "pkg": "react-router-dom",
+        "fileCount": 29,
+        "files": [
+          "src/App.jsx",
+          "src/components/AI/PersonalizedRecommendations.jsx",
+          "src/components/ChatPanel.jsx",
+          "src/components/ChatWidget.jsx",
+          "src/components/Navbar.jsx",
+          "src/components/RecommendedTopics.jsx",
+          "src/components/SearchBox.jsx",
+          "src/components/TopicCard.jsx",
+          "src/pages/AskAI.jsx",
+          "src/pages/FurtherMathematicsPapers.jsx",
+          "src/pages/FurtherMathematicsTopics.jsx",
+          "src/pages/LearningPath.jsx",
+          "src/pages/MathematicsPapers.jsx",
+          "src/pages/NotFound.jsx",
+          "src/pages/PaperPage.jsx",
+          "src/pages/PhysicsA2Level.jsx",
+          "src/pages/PhysicsASLevel.jsx",
+          "src/pages/PhysicsPapers.jsx",
+          "src/pages/PhysicsTopicDetail.jsx",
+          "src/pages/PhysicsTopics.jsx",
+          "src/pages/Recommendations.jsx",
+          "src/pages/Search.jsx",
+          "src/pages/StudyHub.jsx",
+          "src/pages/SubjectPage.jsx",
+          "src/pages/SubjectSelection.jsx",
+          "src/pages/TopicDetail.jsx",
+          "src/pages/learning-runtime/LearningSessionPage.jsx",
+          "src/pages/learning-runtime/ReviewQueuePage.jsx",
+          "src/pages/learning-runtime/TopicWorkspacePage.jsx"
+        ]
+      },
+      {
+        "pkg": "dotenv",
+        "fileCount": 17,
+        "files": [
+          "scripts/aggregation/aggregate-learner-profiles.js",
+          "scripts/migration/backfill-mark-decisions.js",
+          "scripts/phase1/run_evaluate_v1_smoke.js",
+          "scripts/rag/build_live_benchmark_set.js",
+          "scripts/rag/run_canonical_chunk_contract.js",
+          "scripts/rag/run_corpus_audit.js",
+          "scripts/rag/run_corpus_source_coverage.js",
+          "scripts/rag/run_curriculum_nodes_quality_audit.js",
+          "scripts/rag/run_live_benchmark.js",
+          "scripts/rag/run_production_evidence_ingest.js",
+          "scripts/rag/run_production_evidence_post_write_audit.js",
+          "scripts/rag/run_s1_1_benchmark.js",
+          "scripts/rag/run_s1_2_benchmark.js",
+          "scripts/rag/run_s1_3_forced_retrieval_benchmark.js",
+          "scripts/rag/run_s2_augmentation_eval.js",
+          "scripts/rag/run_topic_path_mapping_backfill.js",
+          "scripts/rag_ingest.js"
+        ]
+      },
+      {
+        "pkg": "node:http",
+        "fileCount": 11,
+        "files": [
+          "api/__tests__/api-route-integration.test.js",
+          "api/__tests__/security-baseline.test.js",
+          "api/__tests__/security-depth.test.js",
+          "api/__tests__/shared-rate-limit.test.js",
+          "api/index.js",
+          "api/learning/__tests__/loopback-test-client.js",
+          "api/learning/__tests__/loopback-test-client.test.js",
+          "scripts/learning/run_9709_diagram_review_server.js",
+          "scripts/phase2/run_api_route_integration_summary.js",
+          "scripts/phase2/run_security_baseline_report.js",
+          "scripts/phase3/run_security_depth_gate.js"
+        ]
+      },
+      {
+        "pkg": "@supabase/supabase-js",
+        "fileCount": 11,
+        "files": [
+          "api/lib/supabase/client.js",
+          "scripts/aggregation/aggregate-learner-profiles.js",
+          "scripts/db/cleanup_evidence_ledger.js",
+          "scripts/db/seed_question_bank.js",
+          "scripts/migration/backfill-mark-decisions.js",
+          "scripts/rag/build_live_benchmark_set.js",
+          "scripts/rag/run_live_benchmark.js",
+          "scripts/rag/run_s1_3_forced_retrieval_benchmark.js",
+          "scripts/rag/run_s2_augmentation_eval.js",
+          "scripts/rag_ingest.js",
+          "src/utils/supabase.js"
+        ]
+      },
+      {
+        "pkg": "fast-check",
+        "fileCount": 9,
+        "files": [
+          "tests/aggregation/mastery-aggregation.pbt.test.js",
+          "tests/evidence-ledger/aggregation.pbt.test.js",
+          "tests/evidence-ledger/attempt-repository.pbt.test.js",
+          "tests/evidence-ledger/backfill.pbt.test.js",
+          "tests/evidence-ledger/context-query.pbt.test.js",
+          "tests/evidence-ledger/decision-writer.pbt.test.js",
+          "tests/evidence-ledger/error-event-writer.pbt.test.js",
+          "tests/evidence-ledger/ledger-orchestrator.pbt.test.js",
+          "tests/evidence-ledger/mark-run-repository.pbt.test.js"
+        ]
+      },
+      {
+        "pkg": "supertest",
+        "fileCount": 8,
+        "files": [
+          "api/__tests__/api-route-integration.test.js",
+          "api/__tests__/security-baseline.test.js",
+          "api/__tests__/security-depth.test.js",
+          "api/__tests__/shared-rate-limit.test.js",
+          "api/learning/__tests__/loopback-test-client.js",
+          "scripts/phase2/run_api_route_integration_summary.js",
+          "scripts/phase2/run_security_baseline_report.js",
+          "scripts/phase3/run_security_depth_gate.js"
+        ]
+      },
+      {
+        "pkg": "path",
+        "fileCount": 7,
+        "files": [
+          "api/learning/__tests__/schema-contract.test.js",
+          "api/middleware/__tests__/auth-unification.test.js",
+          "scripts/aggregation/aggregate-learner-profiles.js",
+          "scripts/migration/backfill-mark-decisions.js",
+          "scripts/rag/__tests__/question-aware-chunker.test.js",
+          "scripts/rag/run_question_aware_chunk_pilot.js",
+          "scripts/rag_ingest.js"
+        ]
+      },
+      {
+        "pkg": "react-dom",
+        "fileCount": 6,
+        "files": [
+          "src/components/learning-runtime/__tests__/ImportPostureBanner.test.js",
+          "src/components/learning-runtime/__tests__/LearningSessionShell.test.js",
+          "src/components/learning-runtime/__tests__/SessionAskComposer.test.js",
+          "src/components/learning-runtime/__tests__/WorkspaceArtifactCard.test.js",
+          "src/components/learning-runtime/__tests__/WorkspaceShell.test.js",
+          "src/main.jsx"
+        ]
+      },
+      {
+        "pkg": "fs",
+        "fileCount": 5,
+        "files": [
+          "api/learning/__tests__/schema-contract.test.js",
+          "api/middleware/__tests__/auth-unification.test.js",
+          "scripts/rag/__tests__/question-aware-chunker.test.js",
+          "scripts/rag/run_question_aware_chunk_pilot.js",
+          "scripts/rag_ingest.js"
+        ]
+      },
+      {
+        "pkg": "node:module",
+        "fileCount": 5,
+        "files": [
+          "api/learning/lib/marking/contracts/p3-rubric-validator.js",
+          "scripts/syllabus/lib/9709-syllabus-gate.js",
+          "tests/contracts/9709-canonical-topic-tree-draft.test.js",
+          "tests/contracts/9709-syllabus-topic-tree-schema.test.js",
+          "tests/playwright/windows-side-runner.test.js"
+        ]
+      },
+      {
+        "pkg": "ajv",
+        "fileCount": 4,
+        "files": [
+          "api/learning/lib/marking/contracts/p3-rubric-validator.js",
+          "scripts/syllabus/lib/9709-syllabus-gate.js",
+          "tests/contracts/9709-canonical-topic-tree-draft.test.js",
+          "tests/contracts/9709-syllabus-topic-tree-schema.test.js"
+        ]
+      },
+      {
+        "pkg": "url",
+        "fileCount": 4,
+        "files": [
+          "scripts/aggregation/aggregate-learner-profiles.js",
+          "scripts/migration/backfill-mark-decisions.js",
+          "scripts/rag/run_question_aware_chunk_pilot.js",
+          "scripts/rag_ingest.js"
+        ]
+      },
+      {
+        "pkg": "node:util",
+        "fileCount": 3,
+        "files": [
+          "scripts/evaluation/run_question_search_gate.js",
+          "scripts/learning/run_9709_authority_ready_batch.js",
+          "scripts/learning/run_9709_wave1_search_closure.js"
+        ]
+      },
+      {
+        "pkg": "crypto",
+        "fileCount": 3,
+        "files": [
+          "scripts/migration/backfill-mark-decisions.js",
+          "scripts/rag/lib/canonical-chunks.js",
+          "scripts/rag_ingest.js"
+        ]
+      },
+      {
+        "pkg": "module",
+        "fileCount": 3,
+        "files": [
+          "scripts/rag/__tests__/question-aware-chunker.test.js",
+          "scripts/rag/run_question_aware_chunk_pilot.js",
+          "scripts/rag_ingest.js"
+        ]
+      },
+      {
+        "pkg": "pdf-parse",
+        "fileCount": 3,
+        "files": [
+          "scripts/rag/__tests__/question-aware-chunker.test.js",
+          "scripts/rag/run_question_aware_chunk_pilot.js",
+          "scripts/rag_ingest.js"
+        ]
+      },
+      {
+        "pkg": "@tanstack/react-query",
+        "fileCount": 3,
+        "files": [
+          "src/main.jsx",
+          "src/pages/PhysicsTopicDetail.jsx",
+          "src/pages/Search.jsx"
+        ]
+      },
+      {
+        "pkg": "bcryptjs",
+        "fileCount": 2,
+        "files": [
+          "api/auth/__tests__/productionization.test.js",
+          "api/auth/index.js"
+        ]
+      },
+      {
+        "pkg": "tailwind-merge",
+        "fileCount": 2,
+        "files": [
+          "src/components/ui/multimodal-ai-chat-input.jsx",
+          "src/lib/utils.js"
+        ]
+      },
+      {
+        "pkg": "msw",
+        "fileCount": 2,
+        "files": [
+          "src/mocks/browser.js",
+          "src/mocks/handlers.js"
+        ]
+      }
+    ],
+    "internalCoupling": [
+      {
+        "from": "api",
+        "to": "api",
+        "count": 273
+      },
+      {
+        "from": "scripts",
+        "to": "scripts",
+        "count": 217
+      },
+      {
+        "from": "src",
+        "to": "src",
+        "count": 178
+      },
+      {
+        "from": "tests",
+        "to": "scripts",
+        "count": 61
+      },
+      {
+        "from": "scripts",
+        "to": "api",
+        "count": 52
+      },
+      {
+        "from": "tests",
+        "to": "api",
+        "count": 6
+      }
+    ]
+  }
+}

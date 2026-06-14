@@ -1,0 +1,305 @@
+{
+  "issue": 466,
+  "parent_issue": 460,
+  "generated_at": "2026-06-14",
+  "model_slug_assumed": "gpt-5.3-codex-spark",
+  "source_reports": [
+    "docs/reports/codebase-trust-pass/01-complexity-inventory.md",
+    "docs/reports/codebase-trust-pass/01-complexity-inventory.json",
+    "docs/reports/codebase-trust-pass/02-frontend-runtime-scan.md",
+    "docs/reports/codebase-trust-pass/03-backend-route-contract-scan.md",
+    "docs/reports/codebase-trust-pass/03-backend-route-contract-scan.json",
+    "docs/reports/codebase-trust-pass/04-tests-gates-scan.md",
+    "docs/reports/codebase-trust-pass/04-tests-gates-scan.json",
+    "docs/reports/codebase-trust-pass/05-prd-contract-map.md",
+    "docs/reports/codebase-trust-pass/05-prd-contract-map.json"
+  ],
+  "heatmap": {
+    "frontend_runtime": {
+      "risk_level": "P1",
+      "score": 4,
+      "confidence": "high",
+      "evidence_count": 3,
+      "top_risks": [
+        {
+          "risk": "No page-level runtime tests for LearnSession/Workspace/ReviewQueue pages",
+          "source_report": "02-frontend-runtime-scan.md",
+          "evidence_paths": [
+            "src/pages/learning-runtime/LearningSessionPage.jsx",
+            "src/pages/learning-runtime/TopicWorkspacePage.jsx",
+            "src/pages/learning-runtime/ReviewQueuePage.jsx"
+          ]
+        },
+        {
+          "risk": "Route-state and request-key orchestration concentrated in one page",
+          "source_report": "02-frontend-runtime-scan.md",
+          "evidence_paths": [
+            "src/pages/learning-runtime/LearningSessionPage.jsx"
+          ]
+        },
+        {
+          "risk": "Context path split (`src/context` vs `src/contexts`) is stable but inconsistent",
+          "source_report": "02-frontend-runtime-scan.md",
+          "evidence_paths": [
+            "src/context/AIContext.jsx",
+            "src/contexts/AuthContext.jsx",
+            "src/contexts/ThemeContext.jsx"
+          ]
+        }
+      ]
+    },
+    "backend_runtime": {
+      "risk_level": "P1",
+      "score": 4,
+      "confidence": "high",
+      "evidence_count": 3,
+      "top_risks": [
+        {
+          "risk": "High-LOC core runtime files for session/event/workspace paths",
+          "source_report": "01-complexity-inventory.md",
+          "evidence_paths": [
+            "api/learning/lib/session-runtime/session-service.js",
+            "api/learning/lib/workspaces/workspace-read-service.js",
+            "api/learning/lib/events/attempt-event-service.js"
+          ]
+        },
+        {
+          "risk": "Large AO/control script stack with shared dependency/counterparty risk",
+          "source_report": "01-complexity-inventory.md",
+          "evidence_paths": [
+            "scripts/ao/lib/controller-loop.js",
+            "scripts/ao/lib/eval-harness.js",
+            "scripts/learning/run_9231_wave4_production_ready_gate.js"
+          ]
+        }
+      ]
+    },
+    "route_api_contract": {
+      "risk_level": "P1",
+      "score": 4,
+      "confidence": "high",
+      "evidence_count": 4,
+      "top_risks": [
+        {
+          "risk": "First-match route resolution without duplicate-path/method linting",
+          "source_report": "03-backend-route-contract-scan.md",
+          "evidence_paths": [
+            "api/_runtime/route-registry.js:243-263"
+          ]
+        },
+        {
+          "risk": "Gateway validation mainly structural; payload-level validation is per-handler",
+          "source_report": "03-backend-route-contract-scan.md",
+          "evidence_paths": [
+            "api/index.js:206-230",
+            "api/_runtime/request-adapter.js:133-153"
+          ]
+        },
+        {
+          "risk": "Rate-limit and policy metadata incomplete for some high-impact routes",
+          "source_report": "03-backend-route-contract-scan.md",
+          "evidence_paths": [
+            "api/_runtime/route-registry.js:274-277",
+            "api/lib/security/rate-limit-policy.js"
+          ]
+        },
+        {
+          "risk": "Legacy exclusion logic is explicit but static",
+          "source_report": "03-backend-route-contract-scan.md",
+          "evidence_paths": [
+            "api/_runtime/route-registry.js:4-9",
+            "api/index.js:108-111"
+          ]
+        }
+      ]
+    },
+    "prd_contract": {
+      "risk_level": "P1-P2",
+      "score": 3,
+      "confidence": "medium",
+      "evidence_count": 4,
+      "top_risks": [
+        {
+          "risk": "Critical `active_scope_bundle` path requires explicit preservation",
+          "source_report": "05-prd-contract-map.md",
+          "evidence_paths": [
+            "api/learning/lib/contracts/runtime-contract.js",
+            "api/learning/lib/session-runtime/session-service.js",
+            "api/learning/lib/validators/session-validator.js"
+          ]
+        },
+        {
+          "risk": "MarkingResult / SmartMark boundary depends on explicit fallback posture",
+          "source_report": "05-prd-contract-map.md",
+          "evidence_paths": [
+            "api/learning/lib/contracts/released-scope-core.js",
+            "api/learning/lib/contracts/released-scope.js",
+            "api/marking/evaluate-v1.js"
+          ]
+        },
+        {
+          "risk": "Mastery effect is distributed across event/attempt services, no single authoritative service file",
+          "source_report": "05-prd-contract-map.md",
+          "evidence_paths": [
+            "api/learning/lib/events/event-service.js",
+            "api/learning/lib/events/attempt-event-service.js"
+          ]
+        },
+        {
+          "risk": "Compatibility bridge behavior is active in workspace/review flows",
+          "source_report": "05-prd-contract-map.md",
+          "evidence_paths": [
+            "api/learning/lib/workspaces/workspace-read-service.js",
+            "src/pages/learning-runtime/TopicWorkspacePage.jsx",
+            "src/pages/learning-runtime/ReviewQueuePage.jsx"
+          ]
+        }
+      ]
+    },
+    "tests_gates": {
+      "risk_level": "P1",
+      "score": 4,
+      "confidence": "high",
+      "evidence_count": 3,
+      "top_risks": [
+        {
+          "risk": "Coverage collector excludes large runtime/AO/test surfaces outside API path",
+          "source_report": "04-tests-gates-scan.md",
+          "evidence_paths": [
+            "package.json",
+            "jest config collectCoverageFrom"
+          ]
+        },
+        {
+          "risk": "AO and advisory gates are hard to classify at a glance",
+          "source_report": "04-tests-gates-scan.md",
+          "evidence_paths": [
+            ".github/workflows/rag-s1-contract-gate.yml",
+            ".github/workflows/rag-s1-metric-gate.yml",
+            ".github/workflows/rag-s2-advisory-gate.yml"
+          ]
+        },
+        {
+          "risk": "No canonical workflow-intent mapping document was observed",
+          "source_report": "04-tests-gates-scan.md",
+          "evidence_paths": [
+            "docs/reports/INDEX.md",
+            ".github/workflows/*.yml"
+          ]
+        }
+      ]
+    },
+    "scripts_docs": {
+      "risk_level": "P2",
+      "score": 2,
+      "confidence": "medium",
+      "evidence_count": 2,
+      "top_risks": [
+        {
+          "risk": "Large scripts/test surfaces without dedicated governance index",
+          "source_report": "04-tests-gates-scan.md",
+          "evidence_paths": [
+            "scripts/workflow/",
+            "tests/ao/"
+          ]
+        },
+        {
+          "risk": "Documentation gap for workflow semantics can slow reviewer triage",
+          "source_report": "04-tests-gates-scan.md",
+          "evidence_paths": [
+            "docs/reports/INDEX.md"
+          ]
+        }
+      ]
+    },
+    "environment_tooling": {
+      "risk_level": "P2",
+      "score": 2,
+      "confidence": "low",
+      "evidence_count": 1,
+      "top_risks": [
+        {
+          "risk": "Runtime/tooling claims were noted by scan but not fully validated in this synthesis pass",
+          "source_report": "04-tests-gates-scan.md",
+          "evidence_paths": [
+            "package.json"
+          ]
+        }
+      ]
+    }
+  },
+  "top_25_findings": [
+    {"id": 1, "severity": "P0", "domain": "Tests/Gates", "summary": "Jest coverage is API-only while runtime and frontend tests sit outside coverage set"},
+    {"id": 2, "severity": "P1", "domain": "Frontend Runtime", "summary": "No page-level tests for three major learning-runtime pages"},
+    {"id": 3, "severity": "P1", "domain": "Frontend Runtime", "summary": "LearningSession page owns launch/import/ask orchestration plus route-state transitions"},
+    {"id": 4, "severity": "P1", "domain": "Frontend Runtime", "summary": "Context folder split (`src/context` and `src/contexts`) remains a maintenance risk"},
+    {"id": 5, "severity": "P2", "domain": "Frontend Runtime", "summary": "Route-to-page transition contracts lack explicit integration coverage"},
+    {"id": 6, "severity": "P1", "domain": "Backend Runtime", "summary": "High-LOC backend runtime and service files indicate dense coupling"},
+    {"id": 7, "severity": "P1", "domain": "Backend Runtime", "summary": "High import density in `api/rag/lib/ask-service.js`"},
+    {"id": 8, "severity": "P1", "domain": "Backend Runtime", "summary": "High-LOC event pipeline service impacts scoring and attempt behavior"},
+    {"id": 9, "severity": "P1", "domain": "Backend Runtime", "summary": "Core session-service contract and workspace services remain high-complexity risk points"},
+    {"id": 10, "severity": "P1", "domain": "Backend Runtime", "summary": "AO controller scripts are large and operationally coupled"},
+    {"id": 11, "severity": "P2", "domain": "Backend Runtime", "summary": "Large runtime test files add reviewer fatigue and refactor fragility"},
+    {"id": 12, "severity": "P2", "domain": "Backend Runtime", "summary": "Large AO/state test fixtures can mask intent drift"},
+    {"id": 13, "severity": "P1", "domain": "Route/API Contract", "summary": "Route-registry duplicates can silently shadow by first-match behavior"},
+    {"id": 14, "severity": "P1", "domain": "Route/API Contract", "summary": "Gateway schema checks are not fully machine-level in `api/index.js`"},
+    {"id": 15, "severity": "P2", "domain": "Route/API Contract", "summary": "Rate-limit metadata not comprehensive across all production routes"},
+    {"id": 16, "severity": "P2", "domain": "Route/API Contract", "summary": "Legacy exclusions are static and require manual governance"},
+    {"id": 17, "severity": "P2", "domain": "Route/API Contract", "summary": "No route registry matrix test for all non-learning module auth/rate combinations"},
+    {"id": 18, "severity": "P1", "domain": "PRD Contract", "summary": "Active scope bundle remains central and high-impact if altered"},
+    {"id": 19, "severity": "P1", "domain": "PRD Contract", "summary": "Anchor and registry path is primary for topic/question canonicality"},
+    {"id": 20, "severity": "P2", "domain": "PRD Contract", "summary": "Mastery effect is distributed, not a single module"},
+    {"id": 21, "severity": "P2", "domain": "PRD Contract", "summary": "Smart-marking boundary relies on explicit non-authoritative fallback"},
+    {"id": 22, "severity": "P2", "domain": "PRD Contract", "summary": "Legacy compatibility bridge behavior remains part of active flow"},
+    {"id": 23, "severity": "P1", "domain": "Tests/Gates", "summary": "AO and advisory workflow semantics can be read as hard-gate failures"},
+    {"id": 24, "severity": "P2", "domain": "Tests/Gates", "summary": "No canonical release/advisory/AO docs map for workflows"},
+    {"id": 25, "severity": "P2", "domain": "Scripts/Docs", "summary": "Large workflow/script testing surfaces without consolidated index increase governance effort"}
+  ],
+  "backlog": {
+    "p0": [
+      {
+        "id": "P0-1",
+        "title": "Close coverage interpretation gap",
+        "evidence": "04-tests-gates-scan.md",
+        "acceptance_criteria": [
+          "Document explicit policy for API-only coverage and its limits.",
+          "Define required runtime coverage evidence and reviewer expectation.",
+          "Add a follow-up validation path for frontend/runtime coverage drift."
+        ],
+        "safe_slice": "docs-only"
+      },
+      {
+        "id": "P0-2",
+        "title": "Add route-registry collision and policy-lint baseline",
+        "evidence": "03-backend-route-contract-scan.md",
+        "acceptance_criteria": [
+          "Introduce deterministic duplicate path/method detection rule.",
+          "Validate existing registry set remains unchanged for auth/rate contracts.",
+          "Keep changes scoped to test/lint logic and documentation."
+        ],
+        "safe_slice": "api/_runtime route-contract test"
+      }
+    ],
+    "p1": [
+      {"id": "P1-1", "title": "Add runtime page transition tests"},
+      {"id": "P1-2", "title": "Add route-contract policy matrix tests"},
+      {"id": "P1-3", "title": "Publish workflow intent taxonomy"}
+    ],
+    "p2": [
+      {"id": "P2-1", "title": "Decide/execute context-directory strategy"},
+      {"id": "P2-2", "title": "Create scripts/docs index for test and workflow surfaces"},
+      {"id": "P2-3", "title": "Add complexity heatmap delta tracking to each future cleanup PR"}
+    ]
+  },
+  "open_questions": [
+    "Whether coverage fix is code-gate-first or documentation-first",
+    "Whether route-lint is required hard-fail in this stage",
+    "Whether context path split is accepted or intentionally converged",
+    "Which 2-3 slices should be prioritized for first merge"
+  ],
+  "assumptions": [
+    "Input reports are complete and accurate for issues #461-#465",
+    "No direct repo files beyond provided reports were inspected during synthesis",
+    "Compatibility and typed-ref contract constraints remain mandatory during implementation"
+  ]
+}

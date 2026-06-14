@@ -1,0 +1,187 @@
+{
+  "issue": 463,
+  "parent_issue": 460,
+  "generated_at": "2026-06-14",
+  "branch": "feat/463",
+  "model_slug": "gpt-5.3-codex-spark",
+  "scope": {
+    "focus": [
+      "api/index.js",
+      "api/_runtime/route-registry.js",
+      "api/_runtime/**",
+      "api/lib/security/**",
+      "api/middleware/**",
+      "api/learning/**",
+      "api/evidence/**",
+      "api/marking/**",
+      "api/rag/**"
+    ],
+    "mode": "read-only"
+  },
+  "api_gateway": {
+    "responsibilities": [
+      {
+        "area": "request_adapter",
+        "status": "covered",
+        "evidence": [
+          "api/index.js:198-199",
+          "api/_runtime/request-adapter.js:125-131"
+        ]
+      },
+      {
+        "area": "response_adapter",
+        "status": "covered",
+        "evidence": [
+          "api/index.js:196-200",
+          "api/_runtime/response-adapter.js:157-165"
+        ]
+      },
+      {
+        "area": "cors",
+        "status": "covered",
+        "evidence": ["api/index.js:20-61"]
+      },
+      {
+        "area": "auth_guard",
+        "status": "covered",
+        "evidence": [
+          "api/index.js:122-135",
+          "api/lib/security/error-envelope.js:19-28"
+        ]
+      },
+      {
+        "area": "rate_limit_integration",
+        "status": "selective",
+        "evidence": [
+          "api/_runtime/rate-limit-middleware.js:175-184",
+          "api/_runtime/rate-limit-middleware.js:197-207",
+          "api/_runtime/route-registry.js:11-16",
+          "api/_runtime/route-registry.js:174-220"
+        ]
+      },
+      {
+        "area": "logging_redaction",
+        "status": "covered",
+        "evidence": ["api/index.js:143-151", "api/lib/security/redaction.js:277-299"]
+      },
+      {
+        "area": "handler_loading",
+        "status": "covered",
+        "evidence": ["api/index.js:165-193", "api/_runtime/handler-loader.js:170-205"]
+      },
+      {
+        "area": "body_limit",
+        "status": "covered",
+        "evidence": ["api/_runtime/request-adapter.js:62-67", "api/index.js:192-193"]
+      }
+    ]
+  },
+  "route_registry": {
+    "modules": [
+      {"module": "learning-sessions-ask", "path": "/api/learning/sessions/:id/ask", "methods": ["POST", "OPTIONS"], "auth": "jwt_required", "rateLimit": null},
+      {"module": "learning-sessions-id", "path": "/api/learning/sessions/:id", "methods": ["GET", "OPTIONS"], "auth": "jwt_required", "rateLimit": null},
+      {"module": "learning-sessions", "path": "/api/learning/sessions", "methods": ["POST", "OPTIONS"], "auth": "jwt_required", "rateLimit": null},
+      {"module": "learning-questions-import", "path": "/api/learning/questions/import", "methods": ["POST", "OPTIONS"], "auth": "jwt_required", "rateLimit": null},
+      {"module": "learning-questions", "path": "/api/learning/questions", "methods": ["GET", "OPTIONS"], "auth": "jwt_required", "rateLimit": null},
+      {"module": "learning-workspace-paper", "path": "/api/learning/workspaces/papers/:paperScope", "methods": ["GET", "POST", "OPTIONS"], "auth": "jwt_required", "rateLimit": null},
+      {"module": "learning-workspace-topic", "path": "/api/learning/workspaces/:topicId", "methods": ["GET", "POST", "OPTIONS"], "auth": "jwt_required", "rateLimit": null},
+      {"module": "learning-review-task-id", "path": "/api/learning/review-tasks/:id", "methods": ["PATCH", "OPTIONS"], "auth": "jwt_required", "rateLimit": null},
+      {"module": "learning-review-tasks", "path": "/api/learning/review-tasks", "methods": ["GET", "OPTIONS"], "auth": "jwt_required", "rateLimit": null},
+      {"module": "learning-artifact-id", "path": "/api/learning/artifacts/:id", "methods": ["PATCH", "OPTIONS"], "auth": "jwt_required", "rateLimit": null},
+      {"module": "recommendations-preferences", "path": "/api/recommendations/preferences", "methods": ["GET", "PATCH", "DELETE", "OPTIONS"], "auth": "jwt_required", "rateLimit": null},
+      {"module": "recommendations-learning-data", "path": "/api/recommendations/learning-data", "methods": ["GET", "OPTIONS"], "auth": "jwt_required", "rateLimit": null},
+      {"module": "recommendations", "path": "/api/recommendations", "methods": ["GET", "OPTIONS"], "auth": "jwt_required", "rateLimit": null},
+      {"module": "rag-search", "path": "/api/rag/search", "methods": ["POST", "OPTIONS"], "auth": "jwt_required", "rateLimit": "rag_ai_default_v1"},
+      {"module": "rag-ask", "path": "/api/rag/ask", "methods": ["POST", "OPTIONS"], "auth": "jwt_required", "rateLimit": "rag_ai_default_v1"},
+      {"module": "marking-evaluate-v1", "path": "/api/marking/evaluate-v1", "methods": ["POST", "OPTIONS"], "auth": "jwt_required", "rateLimit": null},
+      {"module": "error-book-id", "path": "/api/error-book/:id", "methods": ["GET", "PATCH", "DELETE", "OPTIONS"], "auth": "jwt_required", "rateLimit": "error_book_write_v1"},
+      {"module": "error-book", "path": "/api/error-book", "methods": ["GET", "POST", "OPTIONS"], "auth": "jwt_required", "rateLimit": "error_book_write_v1"},
+      {"module": "evidence-context", "path": "/api/evidence/context", "methods": ["GET", "OPTIONS"], "auth": "jwt_required", "rateLimit": null},
+      {"module": "auth", "path": "/api/auth", "methods": ["POST", "GET", "OPTIONS"], "auth": "public", "rateLimit": "auth_public_v1"}
+    ],
+    "ordering": {
+      "dynamic": "before_static",
+      "policy": "linear_first_match",
+      "evidence": ["api/_runtime/route-registry.js:243-262"]
+    },
+    "legacy_exclusions": {
+      "paths": ["/api/chat", "/api/rag/chat", "/api/ai/tutor/chat", "/api/marking/evaluate"],
+      "evidence": ["api/_runtime/route-registry.js:4-9", "api/index.js:108-111"]
+    },
+    "retirements": {
+      "evidence": ["api/_runtime/__tests__/route-registry-retirements.test.js:6-203"]
+    }
+  },
+  "coverage": {
+    "route_registry_tests": {
+      "files": [
+        "api/_runtime/__tests__/route-registry-learning.test.js",
+        "api/_runtime/__tests__/route-registry-retirements.test.js"
+      ],
+      "coverage_summary": {
+        "learning_routes": "present",
+        "retirement_exclusions": "present",
+        "dynamic_path_ordering": "present"
+      },
+      "gaps": [
+        "no route-level duplicate detection test",
+        "no route auth/rate-limit matrix lint test"
+      ]
+    }
+  },
+  "learning_runtime_contract": {
+    "sessions": {
+      "routes": [
+        {"path": "/api/learning/sessions", "method": "POST", "handler": "api/learning/sessions/index.js"},
+        {"path": "/api/learning/sessions/:id", "method": "GET", "handler": "api/learning/sessions/[id].js"}
+      ]
+    },
+    "ask": {
+      "routes": [{"path": "/api/learning/sessions/:id/ask", "method": "POST", "handler": "api/learning/sessions/[id]/ask.js"}]
+    },
+    "questions": {
+      "routes": [
+        {"path": "/api/learning/questions", "method": "GET", "handler": "api/learning/questions/index.js"},
+        {"path": "/api/learning/questions/import", "method": "POST", "handler": "api/learning/questions/import.js"}
+      ]
+    },
+    "workspaces": {
+      "routes": [
+        {"path": "/api/learning/workspaces/:topicId", "methods": ["GET", "POST"], "handler": "api/learning/workspaces/[topicId].js"},
+        {"path": "/api/learning/workspaces/papers/:paperScope", "methods": ["GET", "POST"], "handler": "api/learning/workspaces/papers/[paperScope].js"}
+      ]
+    },
+    "review_tasks": {
+      "routes": [
+        {"path": "/api/learning/review-tasks", "method": "GET", "handler": "api/learning/review-tasks/index.js"},
+        {"path": "/api/learning/review-tasks/:id", "method": "PATCH", "handler": "api/learning/review-tasks/[id].js"}
+      ]
+    },
+    "artifacts": {
+      "routes": [{"path": "/api/learning/artifacts/:id", "method": "PATCH", "handler": "api/learning/artifacts/[id].js"}]
+    }
+  },
+  "boundary_inventory": {
+    "rag": ["/api/rag/search", "/api/rag/ask"],
+    "marking": ["/api/marking/evaluate-v1"],
+    "evidence": ["/api/evidence/context"],
+    "error_book": ["/api/error-book", "/api/error-book/:id"]
+  },
+  "findings": {
+    "p0": [
+      "None identified in this scan"
+    ],
+    "p1": [
+      "No duplicate-path/method conflict detection in registry (first-match semantics rely on manual ordering)",
+      "No gateway-level machine-readable schema envelope validation layer"
+    ],
+    "p2": [
+      "Limited route-level policy observability metadata on retired/legacy exclusion handling"
+    ]
+  },
+  "recommended_next_checks": [
+    "Add registry lint for duplicate path/method collisions",
+    "Add generated contract test for auth/rate coverage across all registry modules",
+    "Add gateway-level schema/400-envelope consistency checks for unsupported payload shapes"
+  ]
+}

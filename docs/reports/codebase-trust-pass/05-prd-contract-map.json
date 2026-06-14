@@ -1,0 +1,172 @@
+{
+  "issue": 465,
+  "model_slug_assumed": "gpt-5.3-codex-spark",
+  "generated_at": "2026-06-14",
+  "canonical_prd_present": false,
+  "canonical_prd_path": null,
+  "fallback_contract_docs": [
+    "docs/superpowers/specs/2026-03-20-prd-learning-runtime-contract-design.md",
+    "docs/superpowers/plans/2026-03-20-prd-learning-runtime-pilot-slice-execution.md",
+    "docs/superpowers/plans/2026-03-20-prd-learning-runtime-foundation-bridge.md"
+  ],
+  "map": [
+    {
+      "topic": "Topic / curriculum node",
+      "status": "active",
+      "notes": "Canonical topic identity is resolved via anchor-to-topic resolution and registry-backed lookup; legacy/compat anchors are normalized through anchor resolution rules.",
+      "code_home": [
+        "api/learning/lib/session-runtime/session-anchor-resolution.js",
+        "api/learning/lib/contracts/runtime-contract.js",
+        "api/learning/lib/repositories/question-registry-repository.js"
+      ],
+      "tests_gates": "Anchor resolution + session-validator legality checks and anchor/mode compatibility guards.",
+      "risk": "medium"
+    },
+    {
+      "topic": "Question",
+      "status": "active",
+      "notes": "Questions are registry-backed and read through runtime session creation/import paths; API normalizes canonical shape for clients.",
+      "code_home": [
+        "api/learning/lib/repositories/question-registry-repository.js",
+        "api/learning/lib/session-runtime/session-anchor-resolution.js",
+        "api/learning/lib/session-runtime/session-service.js"
+      ],
+      "tests_gates": "Registry lookup and creation/import validation paths, API schema shape constraints.",
+      "risk": "low"
+    },
+    {
+      "topic": "Question family / question type",
+      "status": "active",
+      "notes": "Family/type truth is registry-derived; released-scope checks rely on released type/family references.",
+      "code_home": [
+        "api/learning/lib/repositories/question-registry-repository.js",
+        "api/learning/lib/contracts/released-scope.js",
+        "api/learning/lib/contracts/released-scope-core.js"
+      ],
+      "tests_gates": "Canonical type checks and release gate conditions in scope contracts.",
+      "risk": "medium"
+    },
+    {
+      "topic": "Study Session",
+      "status": "active",
+      "notes": "Session runtime is canonical in service layer, with API responses normalized for canonical bundle/session state.",
+      "code_home": [
+        "api/learning/lib/session-runtime/session-service.js",
+        "src/api/learningRuntimeApi.js",
+        "src/pages/learning-runtime/LearningSessionPage.jsx"
+      ],
+      "tests_gates": "Session API validation + runtime contract mode/anchor checks.",
+      "risk": "low"
+    },
+    {
+      "topic": "Attempt / event pipeline",
+      "status": "active",
+      "notes": "Attempt processing is event-driven with explicit stage ordering and attempt event builders.",
+      "code_home": [
+        "api/learning/lib/events/event-contract.js",
+        "api/learning/lib/events/event-service.js",
+        "api/learning/lib/events/attempt-event-service.js"
+      ],
+      "tests_gates": "Event contract ordinals + event service transition checks.",
+      "risk": "medium"
+    },
+    {
+      "topic": "Workspace (Paper Workspace + Topic Sections + Stable Slots)",
+      "status": "active",
+      "notes": "Workspace projection/state is owned by workspace read services and surfaced to runtime pages; paper/workspace compatibility appears through explicit adapters.",
+      "code_home": [
+        "api/learning/lib/workspaces/workspace-read-service.js",
+        "api/learning/lib/contracts/runtime-contract.js",
+        "src/pages/learning-runtime/TopicWorkspacePage.jsx"
+      ],
+      "tests_gates": "Stable slot read paths and workspace projection calls.",
+      "risk": "medium"
+    },
+    {
+      "topic": "Artifact",
+      "status": "active",
+      "notes": "Artifact lifecycle is explicit and intent-based in service code; payloads are carried in session context and task adapters.",
+      "code_home": [
+        "api/learning/lib/artifacts/artifact-service.js",
+        "src/api/learningRuntimeApi.js"
+      ],
+      "tests_gates": "Artifact lifecycle + transition constants and capability checks in artifact service.",
+      "risk": "medium"
+    },
+    {
+      "topic": "ReviewTask",
+      "status": "active",
+      "notes": "Review task lifecycle and repository operations are runtime-owned; queue is consumed by topic/review pages.",
+      "code_home": [
+        "api/learning/lib/review/review-task-service.js",
+        "api/learning/lib/repositories/review-task-repository.js",
+        "src/pages/learning-runtime/ReviewQueuePage.jsx"
+      ],
+      "tests_gates": "State transition assertions in review task service and repository write guards.",
+      "risk": "medium"
+    },
+    {
+      "topic": "Evidence / provenance / trust tier",
+      "status": "active",
+      "notes": "Provenance and trust-tier fields are constructed/validated in evidence service/contracts and threaded into ask context.",
+      "code_home": [
+        "api/evidence/context.js",
+        "api/evidence/lib/evidence-context-contract.js",
+        "api/evidence/lib/evidence-context-validator.js",
+        "api/learning/lib/session-runtime/ask-context-builder.js"
+      ],
+      "tests_gates": "Evidence context contract + validator coverage at context builder input boundaries.",
+      "risk": "medium"
+    },
+    {
+      "topic": "Mastery / learning effect",
+      "status": "partial",
+      "notes": "No single explicit Mastery object file was identified in this pass; learning effect appears derived from attempt/event outcomes and session context.",
+      "code_home": [
+        "api/learning/lib/events/attempt-event-service.js",
+        "api/learning/lib/events/event-service.js",
+        "api/learning/lib/session-runtime/ask-context-builder.js"
+      ],
+      "tests_gates": "Attempt/event pipeline event ordinals and effect propagation to session context.",
+      "risk": "high"
+    },
+    {
+      "topic": "MarkingResult / Smart Mark boundary",
+      "status": "compatibility bridge",
+      "notes": "Marking result contract includes conservative/non-authoritative branching; authoritative marks require scoped release and posture guards.",
+      "code_home": [
+        "api/marking/evaluate-v1.js",
+        "api/marking/lib/marking-result-contract.js",
+        "api/learning/lib/events/attempt-event-service.js"
+      ],
+      "tests_gates": "Released scope checks + marking result contract and non-authoritative fallback markers.",
+      "risk": "high"
+    },
+    {
+      "topic": "active_scope_bundle / active scope contract",
+      "status": "active",
+      "notes": "Central canonical object for session scope; runtime validates and persists typed refs rather than replacing with raw IDs.",
+      "code_home": [
+        "api/learning/lib/contracts/runtime-contract.js",
+        "api/learning/lib/session-runtime/session-service.js",
+        "api/learning/lib/validators/session-validator.js",
+        "src/api/learningRuntimeApi.js"
+      ],
+      "tests_gates": "Contract invariants and runtime validation before persistence.",
+      "risk": "low"
+    },
+    {
+      "topic": "Released-scope / non-authoritative fallback posture",
+      "status": "active",
+      "notes": "Explicit release checks and non-released fallback paths are enforced to prevent fake authoritative scores or judgments.",
+      "code_home": [
+        "api/learning/lib/contracts/released-scope-core.js",
+        "api/learning/lib/contracts/released-scope.js",
+        "api/learning/lib/session-runtime/ask-context-builder.js",
+        "api/marking/evaluate-v1.js"
+      ],
+      "tests_gates": "release_scope and authority-posture checks in runtime contracts and marking service.",
+      "risk": "high"
+    }
+  ]
+}

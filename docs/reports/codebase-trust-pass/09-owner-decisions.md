@@ -59,25 +59,41 @@ No large file split should happen before guardrail tests.
 
 Do not change scoring or `MarkingResult` authority in this wave. Do not remove compatibility bridges. For frontend cleanup, tests must come before splitting `LearningSessionPage` or moving runtime orchestration boundaries.
 
-## Follow-up PR sequence
+### D6 no production release claim until P0 criteria pass
 
-1. PR-01 route-registry collision lint
+Do not claim source health improvement, full repo health closure, or production readiness from scan or planning docs.
+
+Production and release claims require the future P0 criteria to pass, especially:
+- route-registry collision guard,
+- coverage and reviewer interpretation policy.
+
+PR-00 records decisions and canonicalizes scan artifacts only. It does not improve runtime behavior by itself.
+
+## Execution PR sequence
+
+1. PR-00 owner decision record
+   - Scope: canonicalize completed scan reports and owner decisions in `docs/reports/codebase-trust-pass/`.
+   - Constraint: docs-only, no behavior change, no source health or production readiness claim.
+
+2. PR-01 route-registry collision lint
    - Scope: add deterministic duplicate method + path collision enforcement for `api/_runtime/route-registry.js`.
-   - Constraint: no route semantics change beyond failing duplicate registry definitions.
+   - Constraint: API runtime route-contract tests only; no production route reorder or route semantics change beyond failing duplicate registry definitions.
+   - Required proof: current registry has no collisions and auth/rate metadata remains unchanged.
+   - Documentation note: first-match route behavior is intentional but must be guarded.
 
-2. PR-02 coverage policy
+3. PR-02 coverage policy docs
    - Scope: document and enforce reviewer interpretation that current coverage is API-surface coverage only.
    - Constraint: no Jest denominator change unless explicitly approved in that PR.
 
-3. PR-03 TECH_REVIEWER_GUIDE final
+4. PR-03 TECH_REVIEWER_GUIDE final
    - Scope: convert the draft reviewer guide into the final reviewer runbook for Codebase Trust Pass execution slices.
    - Constraint: keep guidance tied to evidence paths and owner decisions.
 
-4. PR-04 runtime page transition tests
+5. PR-04 runtime page transition tests
    - Scope: add page-level route transition tests for `LearningSessionPage`, `TopicWorkspacePage`, and `ReviewQueuePage`.
    - Constraint: tests must preserve existing launch/import/ask/review behavior.
 
-5. PR-05 active_scope_bundle guardrail tests
+6. PR-05 active_scope_bundle guardrail tests
    - Scope: add contract-preservation tests around request/response and compatibility paths for `active_scope_bundle`.
    - Constraint: no schema rewrite, persistence rewrite, or typed-ref migration.
 
@@ -93,5 +109,6 @@ Block PR-00 if any of the following are present:
 - any test change,
 - any config, workflow, package, or README change,
 - any full repo health closure claim,
+- any source health improvement or production readiness claim,
 - any statement that API-only coverage is full-stack confidence,
 - any implementation of route lint, runtime tests, active_scope_bundle tests, scoring authority changes, or compatibility bridge removal.

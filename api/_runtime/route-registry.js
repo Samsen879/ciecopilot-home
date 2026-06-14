@@ -253,6 +253,74 @@ function matchRoutePath(route, path) {
   return path.startsWith(`${route.pathPrefix}/`);
 }
 
+function normalizeRouteContractMethods(route) {
+  const methods = Array.isArray(route.methods) && route.methods.length > 0 ? route.methods : ['*'];
+  return methods.map((method) => String(method).toUpperCase());
+}
+
+function overlappingRouteContractMethods(firstRoute, secondRoute) {
+  const firstMethods = normalizeRouteContractMethods(firstRoute);
+  const secondMethods = normalizeRouteContractMethods(secondRoute);
+  if (firstMethods.includes('*') && secondMethods.includes('*')) return ['*'];
+  if (firstMethods.includes('*')) return [...secondMethods].sort();
+  if (secondMethods.includes('*')) return [...firstMethods].sort();
+
+  const secondMethodSet = new Set(secondMethods);
+  return firstMethods.filter((method) => secondMethodSet.has(method)).sort();
+}
+
+function describeRouteContractEntry(entry) {
+  return `${entry.module || '<unknown>'}[${entry.index}]`;
+}
+
+export function findRouteContractCollisions(routes = ROUTES) {
+  const collisions = [];
+  for (let firstIndex = 0; firstIndex < routes.length; firstIndex += 1) {
+    const firstRoute = routes[firstIndex];
+    for (let secondIndex = firstIndex + 1; secondIndex < routes.length; secondIndex += 1) {
+      const secondRoute = routes[secondIndex];
+      if (firstRoute.pathPrefix !== secondRoute.pathPrefix) continue;
+
+      const overlappingMethods = overlappingRouteContractMethods(firstRoute, secondRoute);
+      for (const method of overlappingMethods) {
+        collisions.push({
+          method,
+          pathPrefix: firstRoute.pathPrefix,
+          first: {
+            module: firstRoute.module,
+            index: firstIndex,
+          },
+          duplicate: {
+            module: secondRoute.module,
+            index: secondIndex,
+          },
+        });
+      }
+    }
+  }
+
+  return collisions.sort((left, right) => (
+    left.pathPrefix.localeCompare(right.pathPrefix)
+    || left.method.localeCompare(right.method)
+    || left.first.index - right.first.index
+    || left.duplicate.index - right.duplicate.index
+  ));
+}
+
+export function assertNoRouteContractCollisions(routes = ROUTES) {
+  const collisions = findRouteContractCollisions(routes);
+  if (collisions.length === 0) return;
+
+  throw new Error([
+    'Route registry contains duplicate method + path definitions.',
+    ...collisions.map((collision) => (
+      `${collision.method} ${collision.pathPrefix}: `
+      + `${describeRouteContractEntry(collision.first)} shadows `
+      + describeRouteContractEntry(collision.duplicate)
+    )),
+  ].join('\n'));
+}
+
 export function findRoute(path, method) {
   for (const route of ROUTES) {
     if (!matchRoutePath(route, path)) continue;
